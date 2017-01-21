@@ -51,6 +51,21 @@ namespace kGIS_App
             this.axToolbarControl1 = new ESRI.ArcGIS.Controls.AxToolbarControl();
             this.mainTocControl = new ESRI.ArcGIS.Controls.AxTOCControl();
             this.eagleEyeMapControl = new ESRI.ArcGIS.Controls.AxMapControl();
+            this.查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.属性查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.空间查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.矢量数据空间分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.栅格数据空间分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.网络分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.缓冲区ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.叠加分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.栅格计算ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.栅格统计ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.密度分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.距离分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.重分类ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.创建网络数据集ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.最短路径分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axLicenseControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainMapControl)).BeginInit();
             this.mapViewer.SuspendLayout();
@@ -139,7 +154,11 @@ namespace kGIS_App
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.文件ToolStripMenuItem,
-            this.数据ToolStripMenuItem});
+            this.数据ToolStripMenuItem,
+            this.查询ToolStripMenuItem,
+            this.矢量数据空间分析ToolStripMenuItem,
+            this.栅格数据空间分析ToolStripMenuItem,
+            this.网络分析ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(840, 25);
@@ -194,14 +213,14 @@ namespace kGIS_App
             // LoadShpDocumentToolStripMenuItem
             // 
             this.LoadShpDocumentToolStripMenuItem.Name = "LoadShpDocumentToolStripMenuItem";
-            this.LoadShpDocumentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.LoadShpDocumentToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.LoadShpDocumentToolStripMenuItem.Text = "加载shp文档";
             this.LoadShpDocumentToolStripMenuItem.Click += new System.EventHandler(this.LoadShpDocumentToolStripMenuItem_Click);
             // 
             // LoadGridDataToolStripMenuItem
             // 
             this.LoadGridDataToolStripMenuItem.Name = "LoadGridDataToolStripMenuItem";
-            this.LoadGridDataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.LoadGridDataToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.LoadGridDataToolStripMenuItem.Text = "加载栅格数据";
             this.LoadGridDataToolStripMenuItem.Click += new System.EventHandler(this.LoadGridDataToolStripMenuItem_Click);
             // 
@@ -218,7 +237,7 @@ namespace kGIS_App
             this.axToolbarControl1.Location = new System.Drawing.Point(0, 28);
             this.axToolbarControl1.Name = "axToolbarControl1";
             this.axToolbarControl1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axToolbarControl1.OcxState")));
-            this.axToolbarControl1.Size = new System.Drawing.Size(828, 28);
+            this.axToolbarControl1.Size = new System.Drawing.Size(828, 36);
             this.axToolbarControl1.TabIndex = 7;
             // 
             // mainTocControl
@@ -236,6 +255,111 @@ namespace kGIS_App
             this.eagleEyeMapControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("eagleEyeMapControl.OcxState")));
             this.eagleEyeMapControl.Size = new System.Drawing.Size(322, 206);
             this.eagleEyeMapControl.TabIndex = 2;
+            // 
+            // 查询ToolStripMenuItem
+            // 
+            this.查询ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.属性查询ToolStripMenuItem,
+            this.空间查询ToolStripMenuItem});
+            this.查询ToolStripMenuItem.Name = "查询ToolStripMenuItem";
+            this.查询ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.查询ToolStripMenuItem.Text = "查询";
+            // 
+            // 属性查询ToolStripMenuItem
+            // 
+            this.属性查询ToolStripMenuItem.Name = "属性查询ToolStripMenuItem";
+            this.属性查询ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.属性查询ToolStripMenuItem.Text = "属性查询";
+            // 
+            // 空间查询ToolStripMenuItem
+            // 
+            this.空间查询ToolStripMenuItem.Name = "空间查询ToolStripMenuItem";
+            this.空间查询ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.空间查询ToolStripMenuItem.Text = "空间查询";
+            // 
+            // 矢量数据空间分析ToolStripMenuItem
+            // 
+            this.矢量数据空间分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.缓冲区ToolStripMenuItem,
+            this.叠加分析ToolStripMenuItem});
+            this.矢量数据空间分析ToolStripMenuItem.Name = "矢量数据空间分析ToolStripMenuItem";
+            this.矢量数据空间分析ToolStripMenuItem.Size = new System.Drawing.Size(116, 21);
+            this.矢量数据空间分析ToolStripMenuItem.Text = "矢量数据空间分析";
+            // 
+            // 栅格数据空间分析ToolStripMenuItem
+            // 
+            this.栅格数据空间分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.栅格计算ToolStripMenuItem,
+            this.栅格统计ToolStripMenuItem,
+            this.密度分析ToolStripMenuItem,
+            this.距离分析ToolStripMenuItem,
+            this.重分类ToolStripMenuItem});
+            this.栅格数据空间分析ToolStripMenuItem.Name = "栅格数据空间分析ToolStripMenuItem";
+            this.栅格数据空间分析ToolStripMenuItem.Size = new System.Drawing.Size(116, 21);
+            this.栅格数据空间分析ToolStripMenuItem.Text = "栅格数据空间分析";
+            // 
+            // 网络分析ToolStripMenuItem
+            // 
+            this.网络分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.创建网络数据集ToolStripMenuItem,
+            this.最短路径分析ToolStripMenuItem});
+            this.网络分析ToolStripMenuItem.Name = "网络分析ToolStripMenuItem";
+            this.网络分析ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
+            this.网络分析ToolStripMenuItem.Text = "网络分析";
+            // 
+            // 缓冲区ToolStripMenuItem
+            // 
+            this.缓冲区ToolStripMenuItem.Name = "缓冲区ToolStripMenuItem";
+            this.缓冲区ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.缓冲区ToolStripMenuItem.Text = "缓冲区";
+            // 
+            // 叠加分析ToolStripMenuItem
+            // 
+            this.叠加分析ToolStripMenuItem.Name = "叠加分析ToolStripMenuItem";
+            this.叠加分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.叠加分析ToolStripMenuItem.Text = "叠加分析";
+            // 
+            // 栅格计算ToolStripMenuItem
+            // 
+            this.栅格计算ToolStripMenuItem.Name = "栅格计算ToolStripMenuItem";
+            this.栅格计算ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.栅格计算ToolStripMenuItem.Text = "栅格计算";
+            // 
+            // 栅格统计ToolStripMenuItem
+            // 
+            this.栅格统计ToolStripMenuItem.Name = "栅格统计ToolStripMenuItem";
+            this.栅格统计ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.栅格统计ToolStripMenuItem.Text = "栅格统计";
+            // 
+            // 密度分析ToolStripMenuItem
+            // 
+            this.密度分析ToolStripMenuItem.Name = "密度分析ToolStripMenuItem";
+            this.密度分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.密度分析ToolStripMenuItem.Text = "密度分析";
+            // 
+            // 距离分析ToolStripMenuItem
+            // 
+            this.距离分析ToolStripMenuItem.Name = "距离分析ToolStripMenuItem";
+            this.距离分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.距离分析ToolStripMenuItem.Text = "距离分析";
+            // 
+            // 重分类ToolStripMenuItem
+            // 
+            this.重分类ToolStripMenuItem.Name = "重分类ToolStripMenuItem";
+            this.重分类ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.重分类ToolStripMenuItem.Text = "重分类";
+            // 
+            // 创建网络数据集ToolStripMenuItem
+            // 
+            this.创建网络数据集ToolStripMenuItem.Name = "创建网络数据集ToolStripMenuItem";
+            this.创建网络数据集ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.创建网络数据集ToolStripMenuItem.Text = "创建网络数据集";
+            // 
+            // 最短路径分析ToolStripMenuItem
+            // 
+            this.最短路径分析ToolStripMenuItem.Name = "最短路径分析ToolStripMenuItem";
+            this.最短路径分析ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.最短路径分析ToolStripMenuItem.Text = "最短路径分析";
             // 
             // Form1
             // 
@@ -292,6 +416,21 @@ namespace kGIS_App
         private System.Windows.Forms.ToolStripMenuItem 数据ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LoadShpDocumentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LoadGridDataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 查询ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 属性查询ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 空间查询ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 矢量数据空间分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 缓冲区ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 叠加分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 栅格数据空间分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 栅格计算ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 栅格统计ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 密度分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 距离分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 重分类ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 网络分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 创建网络数据集ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 最短路径分析ToolStripMenuItem;
     }
 }
 

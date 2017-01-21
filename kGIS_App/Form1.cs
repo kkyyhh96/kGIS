@@ -11,6 +11,7 @@ using ESRI.ArcGIS.DataSourcesFile;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.DataSourcesRaster;
 
 namespace kGIS_App
 {
@@ -52,6 +53,11 @@ namespace kGIS_App
             }
         }
 
+        /// <summary>
+        /// 加载mxd文档
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LoadShpDocumentToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -66,8 +72,8 @@ namespace kGIS_App
                     string shpFullPath = openFileDialog.FileName;
                     if (shpFullPath != "")
                     {
-                        int lastIndex = shpFullPath.LastIndexOf("\\");
-                        mainMapControl.AddShapeFile(shpFullPath.Substring(0, lastIndex), shpFullPath.Substring(lastIndex + 1));
+                        int indexOfShpFullPath = shpFullPath.LastIndexOf("\\");//获取shp文档名并进行切割
+                        mainMapControl.AddShapeFile(shpFullPath.Substring(0, indexOfShpFullPath), shpFullPath.Substring(indexOfShpFullPath + 1));
                     }
                     else return;
                 }
@@ -78,18 +84,43 @@ namespace kGIS_App
             }
         }
 
+        /// <summary>
+        /// 加载栅格数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LoadGridDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.CheckFileExists = true;
             openFileDialog.Title = "加载栅格数据";
-            openFileDialog.Filter = "Shape文档(*.shp)|*.shp;";
+            openFileDialog.Filter = "栅格文档(*.*)|*.bmp;*.tif;*.jpg;*.img|(*.bmp)|*.bmp|(*.tif)|*.tif|(*.jpg)|*.jpg|(*.img)|*.img";
             openFileDialog.RestoreDirectory = true;
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+
+            openFileDialog.ShowDialog();
+            string rasterFullPath = openFileDialog.FileName;
+            int indexOfRasterFullPath = rasterFullPath.LastIndexOf("\\");
+            string rasterFilePath = rasterFullPath.Substring(0, indexOfRasterFullPath);//文件路径
+            string rasterFileName = rasterFullPath.Substring(indexOfRasterFullPath + 1);//文件名
+
+            IWorkspaceFactory workspaceFactory = new RasterWorkspaceFactory();
+            IWorkspace workspace = workspaceFactory.OpenFromFile(rasterFilePath, 0);
+            IRasterWorkspace rasterWorkspace = workspace as IRasterWorkspace;
+            IRasterDataset rasterDataset = rasterWorkspace.OpenRasterDataset(rasterFileName);
+
+            //创建影像金字塔
+            IRasterPyramid rasterPyramid = rasterDataset as IRasterPyramid;
+            if (rasterPyramid != null)
             {
-                string shpFullPath = openFileDialog.FileName;
-                int lastIndex = shpFullPath.LastIndexOf("\\");
+                //判断是否已经存在了影像金字塔,没有则创建
+                if (!(rasterPyramid.Present))
+                {
+                    rasterPyramid.Create();
+                }
             }
+
+            IRaster raster = rasterDataset.CreateDefaultRaster();
+            //mainMapControl.AddLayer(layer);
         }
     }
 }
