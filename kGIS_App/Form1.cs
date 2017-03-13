@@ -122,5 +122,6 @@ namespace kGIS_App
             IRaster raster = rasterDataset.CreateDefaultRaster();
             //mainMapControl.AddLayer(layer);
         }
+
     }
 }
