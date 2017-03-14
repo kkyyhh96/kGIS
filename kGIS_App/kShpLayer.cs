@@ -22,7 +22,12 @@ namespace kGIS_App
         {
             public double x;
             public double y;
-            public Dictionary<string, string> attribute = new Dictionary<string, string>();
+            public kShpPoint() { }
+            public kShpPoint(double x, double y)
+            {
+                this.x = x;
+                this.y = y;
+            }
         }
 
         /// <summary>
@@ -31,7 +36,7 @@ namespace kGIS_App
         /// <param name="kShpPointList">点数据列表</param>
         /// <param name="filePath">shp文件保存路径</param>
         /// <returns></returns>
-        private IFeatureLayer CreateShpFromPoint(List<kShpPoint> kShpPointList,string filePath)
+        private IFeatureLayer CreateShpFromPoint(List<kShpPoint> kShpPointList, string filePath)
         {
             //获取shp文件的名称
             int index = filePath.LastIndexOf('\\');
@@ -41,19 +46,51 @@ namespace kGIS_App
             //创建工作空间工厂和工作空间
             IWorkspaceFactory kWorkSpaceFactory = new ShapefileWorkspaceFactoryClass();
             IFeatureWorkspace kFeatureWorkSpace = (IFeatureWorkspace)kWorkSpaceFactory.OpenFromFile(folder, 0);
-            
+
             //创建字段
+            IFields fields = new FieldsClass();
+            IFieldsEdit fieldsEdit = (IFieldsEdit)fields;
+
             IField kField = new FieldClass();
-            IFieldEdit kFieldEdit=(IFieldEdit)kField;
+            IFieldEdit kFieldEdit = (IFieldEdit)kField;
             kFieldEdit.Name_2 = "Shape";
             kFieldEdit.Type_2 = esriFieldType.esriFieldTypeGeometry;
             IGeometryDef kGeometryDef = new GeometryDefClass();
             IGeometryDefEdit kGeometryDefEdit = (IGeometryDefEdit)kGeometryDef;
             kGeometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;//设置为点数据
 
-            ISpatialReferenceFactory kSRF = new SpatialReferenceEnvironmentClass();
             //定义坐标系
+            ISpatialReferenceFactory spatialReferenceFactory = new SpatialReferenceEnvironmentClass();
+            ISpatialReference spatialReference = spatialReferenceFactory.CreateGeographicCoordinateSystem((int)esriSRGeoCSType.esriSRGeoCS_WGS1984);
+            kGeometryDefEdit.SpatialReference_2 = spatialReference;
+            kFieldEdit.GeometryDef_2 = kGeometryDef;
 
+            //添加默认字段
+            fieldsEdit.AddField(kField);
+
+            IFieldEdit testFieldEdit = new FieldClass();
+            testFieldEdit.Name_2 = "test";
+            testFieldEdit.Type_2 = ESRI.ArcGIS.Geodatabase.esriFieldType.esriFieldTypeString;
+            testFieldEdit.DefaultValue_2 = "aaa";
+            fieldsEdit.AddField(testFieldEdit);
+
+            //建立要素集
+            IFeatureClass featureClass = kFeatureWorkSpace.CreateFeatureClass(shpName, fields, null, null, esriFeatureType.esriFTSimple, "Shape", "");
+            IPoint point = new PointClass();
+
+            for (int i = 0; i < kShpPointList.Count; i++)
+            {
+                point.X = kShpPointList[i].x;
+                point.Y = kShpPointList[i].y;
+                IFeature feature = featureClass.CreateFeature();
+                feature.Shape = point;
+                feature.Store();
+            }
+
+            IFeatureLayer featureLayer = new FeatureLayerClass();
+            featureLayer.Name = shpName;
+            featureLayer.FeatureClass = featureClass;
+            return featureLayer;
         }
     }
 }

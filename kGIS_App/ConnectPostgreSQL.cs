@@ -14,6 +14,8 @@ namespace kGIS_App
     public partial class ConnectPostgreSQL : Form
     {
         string connectIP, connectPort, connectDatabaseName, connectUserName, connectPassword;
+        NpgsqlConnection connection;
+        string coordinateField, shpPath;
 
         public ConnectPostgreSQL()
         {
@@ -38,8 +40,8 @@ namespace kGIS_App
                 connectPassword = tbxPassword.Text;
 
                 //连接数据库
-                NpgsqlConnection connection = new NpgsqlConnection("Server = " + connectIP + "; Port = " + connectPort +
-                    "; UserId = " + connectUserName + "; Password = " + connectPassword + ";Database = " + connectDatabaseName);
+                connection = new NpgsqlConnection("Server = " + connectIP + "; Port = " + connectPort +
+                                   "; UserId = " + connectUserName + "; Password = " + connectPassword + ";Database = " + connectDatabaseName);
                 connection.Open();
                 connectionResult = true;
             }
@@ -53,5 +55,57 @@ namespace kGIS_App
                 MessageBox.Show("Connection Successfully!");
             }
         }
+
+        private void cmbPoint_SelectedValueChanged(object sender, EventArgs e)
+        {
+            coordinateField = cmbPoint.Text;
+        }
+
+        private void cmbPoint_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// 将PostgreSQL的数据导出为shp文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnImportData_Click(object sender, EventArgs e)
+        {
+            string sqlCommand = "select " + coordinateField + " from " + tbxTableName + " limit 1;";
+            NpgsqlCommand command = new NpgsqlCommand(sqlCommand, connection);
+            NpgsqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Console.WriteLine(reader.GetString(0));
+                kShpLayer.kShpPoint pt = new kShpLayer.kShpPoint();
+
+            }
+        }
+
+        private void cmbPoint_DropDown(object sender, EventArgs e)
+        {
+            try
+            {
+                //查询字段名称
+                string tableName = tbxTableName.Text;
+                string sqlCommand = "select attname from pg_attribute where attrelid = ( select relfilenode from pg_class where relname = '" + tableName + "') and attnum > 0;";
+                NpgsqlCommand command = new NpgsqlCommand(sqlCommand, connection);
+
+                NpgsqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Console.WriteLine(reader.GetString(0));
+                    cmbPoint.Items.Add(reader.GetString(0));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("未连接到数据库");
+            }
+        }
+
     }
 }

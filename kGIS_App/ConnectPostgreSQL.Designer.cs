@@ -39,6 +39,13 @@
             this.tbxPassword = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.tbxTableName = new System.Windows.Forms.TextBox();
+            this.btnImportData = new System.Windows.Forms.Button();
+            this.cmbPoint = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnDatabaseConnect
@@ -57,6 +64,7 @@
             this.tbxIP.Name = "tbxIP";
             this.tbxIP.Size = new System.Drawing.Size(100, 21);
             this.tbxIP.TabIndex = 1;
+            this.tbxIP.Text = "127.0.0.1";
             // 
             // label1
             // 
@@ -73,6 +81,7 @@
             this.tbxPort.Name = "tbxPort";
             this.tbxPort.Size = new System.Drawing.Size(100, 21);
             this.tbxPort.TabIndex = 3;
+            this.tbxPort.Text = "5432";
             // 
             // tbxDatabaseName
             // 
@@ -105,6 +114,7 @@
             this.tbxUserName.Name = "tbxUserName";
             this.tbxUserName.Size = new System.Drawing.Size(100, 21);
             this.tbxUserName.TabIndex = 7;
+            this.tbxUserName.Text = "postgres";
             // 
             // tbxPassword
             // 
@@ -112,6 +122,7 @@
             this.tbxPassword.Name = "tbxPassword";
             this.tbxPassword.Size = new System.Drawing.Size(100, 21);
             this.tbxPassword.TabIndex = 8;
+            this.tbxPassword.Text = "postgres";
             // 
             // label4
             // 
@@ -131,11 +142,80 @@
             this.label5.TabIndex = 10;
             this.label5.Text = "Password";
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(138, 139);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(35, 12);
+            this.label9.TabIndex = 16;
+            this.label9.Text = "Point";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(12, 139);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(65, 12);
+            this.label10.TabIndex = 13;
+            this.label10.Text = "Table_name";
+            // 
+            // tbxTableName
+            // 
+            this.tbxTableName.Location = new System.Drawing.Point(12, 154);
+            this.tbxTableName.Name = "tbxTableName";
+            this.tbxTableName.Size = new System.Drawing.Size(100, 21);
+            this.tbxTableName.TabIndex = 12;
+            // 
+            // btnImportData
+            // 
+            this.btnImportData.Location = new System.Drawing.Point(278, 206);
+            this.btnImportData.Name = "btnImportData";
+            this.btnImportData.Size = new System.Drawing.Size(75, 23);
+            this.btnImportData.TabIndex = 11;
+            this.btnImportData.Text = "Import";
+            this.btnImportData.UseVisualStyleBackColor = true;
+            this.btnImportData.Click += new System.EventHandler(this.btnImportData_Click);
+            // 
+            // cmbPoint
+            // 
+            this.cmbPoint.FormattingEnabled = true;
+            this.cmbPoint.Location = new System.Drawing.Point(140, 154);
+            this.cmbPoint.Name = "cmbPoint";
+            this.cmbPoint.Size = new System.Drawing.Size(121, 20);
+            this.cmbPoint.TabIndex = 22;
+            this.cmbPoint.DropDown += new System.EventHandler(this.cmbPoint_DropDown);
+            this.cmbPoint.SelectedValueChanged += new System.EventHandler(this.cmbPoint_SelectedValueChanged);
+            this.cmbPoint.Click += new System.EventHandler(this.cmbPoint_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(10, 193);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(53, 12);
+            this.label6.TabIndex = 24;
+            this.label6.Text = "Shp Path";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(12, 208);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(249, 21);
+            this.textBox1.TabIndex = 23;
+            // 
             // ConnectPostgreSQL
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 361);
+            this.ClientSize = new System.Drawing.Size(384, 251);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.cmbPoint);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.tbxTableName);
+            this.Controls.Add(this.btnImportData);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.tbxPassword);
@@ -167,5 +247,12 @@
         private System.Windows.Forms.TextBox tbxPassword;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox tbxTableName;
+        private System.Windows.Forms.Button btnImportData;
+        private System.Windows.Forms.ComboBox cmbPoint;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

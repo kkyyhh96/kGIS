@@ -12,6 +12,7 @@ using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.DataSourcesRaster;
+using ESRI.ArcGIS.Display;
 
 namespace kGIS_App
 {
@@ -74,6 +75,9 @@ namespace kGIS_App
                     {
                         int indexOfShpFullPath = shpFullPath.LastIndexOf("\\");//获取shp文档名并进行切割
                         mainMapControl.AddShapeFile(shpFullPath.Substring(0, indexOfShpFullPath), shpFullPath.Substring(indexOfShpFullPath + 1));
+
+                        //同步鹰眼
+                        SynchronizeEagleEye();
                     }
                     else return;
                 }
@@ -120,8 +124,190 @@ namespace kGIS_App
             }
 
             IRaster raster = rasterDataset.CreateDefaultRaster();
-            //mainMapControl.AddLayer(layer);
+            IRasterLayer rasterLayer = new RasterLayerClass();
+            rasterLayer.CreateFromRaster(raster);
+            ILayer layer = rasterLayer as ILayer;
+            mainMapControl.AddLayer(layer, 0);
+
+            //同步鹰眼
+            SynchronizeEagleEye();
         }
 
+        private void mainMapControl_OnExtentUpdated(object sender, IMapControlEvents2_OnExtentUpdatedEvent e)
+        {
+            // 得到新范围
+            IEnvelope pEnvelope = (IEnvelope)e.newEnvelope;
+            IGraphicsContainer pGraphicsContainer = eagleEyeMapControl.Map as IGraphicsContainer;
+            IActiveView pActiveView = pGraphicsContainer as IActiveView;
+            //在绘制前，清除axMapControl2中的任何图形元素
+            pGraphicsContainer.DeleteAllElements();
+            IRectangleElement pRectangleEle = new RectangleElementClass();
+            IElement pElement = pRectangleEle as IElement;
+            pElement.Geometry = pEnvelope;
+            //设置鹰眼图中的红线框
+            IRgbColor pColor = new RgbColorClass();
+            pColor.Red = 255; pColor.Green = 0; pColor.Blue = 0; pColor.Transparency = 255;
+            //产生一个线符号对象
+            ILineSymbol pOutline = new SimpleLineSymbolClass();
+            pOutline.Width = 3; pOutline.Color = pColor;
+            //设置颜色属性
+            pColor = new RgbColorClass();
+            pColor.Red = 255; pColor.Green = 0; pColor.Blue = 0; pColor.Transparency = 0;
+            //设置填充符号的属性
+            IFillSymbol pFillSymbol = new SimpleFillSymbolClass();
+            pFillSymbol.Color = pColor; pFillSymbol.Outline = pOutline;
+            IFillShapeElement pFillShapeEle = pElement as IFillShapeElement;
+            pFillShapeEle.Symbol = pFillSymbol;
+            pGraphicsContainer.AddElement((IElement)pFillShapeEle, 0);
+            pActiveView.PartialRefresh(esriViewDrawPhase.esriViewGraphics, null, null);//部分刷新
+        }
+
+        private void mainMapControl_OnMapReplaced(object sender, IMapControlEvents2_OnMapReplacedEvent e)
+        {
+            SynchronizeEagleEye();
+        }
+
+        /// <summary>
+        /// 同步鹰眼
+        /// </summary>
+        private void SynchronizeEagleEye()
+        {
+            //获取主图图层
+            if (mainMapControl.LayerCount > 0)
+            {
+                eagleEyeMapControl.Map = new MapClass();
+                //确保鹰眼视图与数据视图的图层上下顺序保持一致
+                for (int i = mainMapControl.Map.LayerCount - 1; i >= 0; i--)
+                {
+                    eagleEyeMapControl.AddLayer(mainMapControl.get_Layer(i));
+                }
+                eagleEyeMapControl.Extent = mainMapControl.FullExtent;
+                eagleEyeMapControl.Refresh();
+            }
+        }
+
+        private void eagleEyeMapControl_OnMouseMove(object sender, IMapControlEvents2_OnMouseMoveEvent e)
+        {
+            if (e.button == 1)
+            {
+                IPoint pPoint = new PointClass();
+                pPoint.PutCoords(e.mapX, e.mapY);
+                mainMapControl.CenterAt(pPoint);
+                mainMapControl.ActiveView.PartialRefresh(esriViewDrawPhase.esriViewGeography, null, null);
+            }
+        }
+
+        private void eagleEyeMapControl_OnMouseDown(object sender, IMapControlEvents2_OnMouseDownEvent e)
+        {
+            if (eagleEyeMapControl.Map.LayerCount > 0)
+            {
+                if (e.button == 1)
+                {
+                    IPoint pPoint = new PointClass();
+                    pPoint.PutCoords(e.mapX, e.mapY);
+                    mainMapControl.CenterAt(pPoint);
+                    mainMapControl.ActiveView.PartialRefresh(esriViewDrawPhase.esriViewGeography, null, null);
+                }
+                else if (e.button == 2)
+                {
+                    IEnvelope pEnv = eagleEyeMapControl.TrackRectangle();
+                    mainMapControl.Extent = pEnv;
+                    mainMapControl.ActiveView.PartialRefresh(esriViewDrawPhase.esriViewGeography, null, null);
+                }
+            }
+        }
+
+        private void DensityAnalystToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DensityAnalystForm densityAnalystForm = new DensityAnalystForm();
+            densityAnalystForm.Show();
+        }
+
+        private void LoadPostGISDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConnectPostgreSQL connectPostgreSQL = new ConnectPostgreSQL();
+            connectPostgreSQL.Show();
+        }
+
+        /// <summary>
+        /// 保存地图文档
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveWorkFactorySpaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string saveMxdFileName = mainMapControl.DocumentFilename;
+                IMapDocument mapDocument = new MapDocumentClass();
+                if (saveMxdFileName == null)
+                {
+                    //如果名称不存在,则输入名称
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.Title = "请选择保存路径";
+                    saveFileDialog.OverwritePrompt = true;
+                    saveFileDialog.Filter = "Arcmap文档(*.mxd)|x.mxd|ArcMap模板(*.mxt)|*.mxt";
+                    saveFileDialog.RestoreDirectory = true;
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        saveMxdFileName = saveFileDialog.FileName;
+                        mainMapControl.DocumentFilename = saveMxdFileName;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                mapDocument.New(saveMxdFileName);
+                mapDocument.ReplaceContents(mainMapControl.Map as IMxdContents);
+                mapDocument.Save(mapDocument.UsesRelativePaths, true);
+                mapDocument.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 另存为地图文档
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveAsWorkFactorySpaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Title = "请选择另保存路径";
+                saveFileDialog.OverwritePrompt = true;
+                saveFileDialog.Filter = "Arcmap文档(*.mxd)|x.mxd|ArcMap模板(*.mxt)|*.mxt";
+                saveFileDialog.RestoreDirectory = true;
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string saveMxdFileName = saveFileDialog.FileName;
+
+                    IMapDocument mapDocument = new MapDocumentClass();
+                    mapDocument.New(saveMxdFileName);
+                    mapDocument.ReplaceContents(mainMapControl.Map as IMxdContents);
+                    mapDocument.Save(mapDocument.UsesRelativePaths, true);
+                    mapDocument.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 新建空白地图文档
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewWorkFactoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveWorkFactorySpaceToolStripMenuItem_Click(sender, e);
+        }
     }
 }

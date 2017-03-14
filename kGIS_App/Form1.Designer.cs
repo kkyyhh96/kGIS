@@ -40,10 +40,10 @@ namespace kGIS_App
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.新建ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NewWorkFactoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenMxdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.另存为工作空间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.另存为工作空间ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveWorkFactorySpaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveAsWorkFactorySpaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.数据ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadShpDocumentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadGridDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,7 +58,7 @@ namespace kGIS_App
             this.栅格数据空间分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.栅格计算ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.栅格统计ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.密度分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DensityAnalystToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.距离分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.重分类ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -93,6 +93,8 @@ namespace kGIS_App
             this.mainMapControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mainMapControl.OcxState")));
             this.mainMapControl.Size = new System.Drawing.Size(480, 462);
             this.mainMapControl.TabIndex = 1;
+            this.mainMapControl.OnExtentUpdated += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnExtentUpdatedEventHandler(this.mainMapControl_OnExtentUpdated);
+            this.mainMapControl.OnMapReplaced += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMapReplacedEventHandler(this.mainMapControl_OnMapReplaced);
             // 
             // button1
             // 
@@ -166,19 +168,20 @@ namespace kGIS_App
             // 文件ToolStripMenuItem
             // 
             this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.新建ToolStripMenuItem,
+            this.NewWorkFactoryToolStripMenuItem,
             this.OpenMxdToolStripMenuItem,
-            this.另存为工作空间ToolStripMenuItem,
-            this.另存为工作空间ToolStripMenuItem1});
+            this.SaveWorkFactorySpaceToolStripMenuItem,
+            this.SaveAsWorkFactorySpaceToolStripMenuItem});
             this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
             this.文件ToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
             this.文件ToolStripMenuItem.Text = "文件";
             // 
-            // 新建ToolStripMenuItem
+            // NewWorkFactoryToolStripMenuItem
             // 
-            this.新建ToolStripMenuItem.Name = "新建ToolStripMenuItem";
-            this.新建ToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-            this.新建ToolStripMenuItem.Text = "新建工作空间";
+            this.NewWorkFactoryToolStripMenuItem.Name = "NewWorkFactoryToolStripMenuItem";
+            this.NewWorkFactoryToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.NewWorkFactoryToolStripMenuItem.Text = "新建工作空间";
+            this.NewWorkFactoryToolStripMenuItem.Click += new System.EventHandler(this.NewWorkFactoryToolStripMenuItem_Click);
             // 
             // OpenMxdToolStripMenuItem
             // 
@@ -187,17 +190,19 @@ namespace kGIS_App
             this.OpenMxdToolStripMenuItem.Text = "打开工作空间";
             this.OpenMxdToolStripMenuItem.Click += new System.EventHandler(this.OpenMxdToolStripMenuItem_Click);
             // 
-            // 另存为工作空间ToolStripMenuItem
+            // SaveWorkFactorySpaceToolStripMenuItem
             // 
-            this.另存为工作空间ToolStripMenuItem.Name = "另存为工作空间ToolStripMenuItem";
-            this.另存为工作空间ToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-            this.另存为工作空间ToolStripMenuItem.Text = "保存工作空间";
+            this.SaveWorkFactorySpaceToolStripMenuItem.Name = "SaveWorkFactorySpaceToolStripMenuItem";
+            this.SaveWorkFactorySpaceToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.SaveWorkFactorySpaceToolStripMenuItem.Text = "保存工作空间";
+            this.SaveWorkFactorySpaceToolStripMenuItem.Click += new System.EventHandler(this.SaveWorkFactorySpaceToolStripMenuItem_Click);
             // 
-            // 另存为工作空间ToolStripMenuItem1
+            // SaveAsWorkFactorySpaceToolStripMenuItem
             // 
-            this.另存为工作空间ToolStripMenuItem1.Name = "另存为工作空间ToolStripMenuItem1";
-            this.另存为工作空间ToolStripMenuItem1.Size = new System.Drawing.Size(165, 22);
-            this.另存为工作空间ToolStripMenuItem1.Text = "另存为工作空间";
+            this.SaveAsWorkFactorySpaceToolStripMenuItem.Name = "SaveAsWorkFactorySpaceToolStripMenuItem";
+            this.SaveAsWorkFactorySpaceToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.SaveAsWorkFactorySpaceToolStripMenuItem.Text = "另存为工作空间";
+            this.SaveAsWorkFactorySpaceToolStripMenuItem.Click += new System.EventHandler(this.SaveAsWorkFactorySpaceToolStripMenuItem_Click);
             // 
             // 数据ToolStripMenuItem
             // 
@@ -228,6 +233,7 @@ namespace kGIS_App
             this.LoadPostGISDataToolStripMenuItem.Name = "LoadPostGISDataToolStripMenuItem";
             this.LoadPostGISDataToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.LoadPostGISDataToolStripMenuItem.Text = "加载PostGIS数据";
+            this.LoadPostGISDataToolStripMenuItem.Click += new System.EventHandler(this.LoadPostGISDataToolStripMenuItem_Click);
             // 
             // 查询ToolStripMenuItem
             // 
@@ -283,7 +289,7 @@ namespace kGIS_App
             this.栅格数据空间分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.栅格计算ToolStripMenuItem,
             this.栅格统计ToolStripMenuItem,
-            this.密度分析ToolStripMenuItem,
+            this.DensityAnalystToolStripMenuItem,
             this.距离分析ToolStripMenuItem,
             this.重分类ToolStripMenuItem});
             this.栅格数据空间分析ToolStripMenuItem.Name = "栅格数据空间分析ToolStripMenuItem";
@@ -302,11 +308,12 @@ namespace kGIS_App
             this.栅格统计ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.栅格统计ToolStripMenuItem.Text = "栅格统计";
             // 
-            // 密度分析ToolStripMenuItem
+            // DensityAnalystToolStripMenuItem
             // 
-            this.密度分析ToolStripMenuItem.Name = "密度分析ToolStripMenuItem";
-            this.密度分析ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
-            this.密度分析ToolStripMenuItem.Text = "密度分析";
+            this.DensityAnalystToolStripMenuItem.Name = "DensityAnalystToolStripMenuItem";
+            this.DensityAnalystToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.DensityAnalystToolStripMenuItem.Text = "密度分析";
+            this.DensityAnalystToolStripMenuItem.Click += new System.EventHandler(this.DensityAnalystToolStripMenuItem_Click);
             // 
             // 距离分析ToolStripMenuItem
             // 
@@ -351,6 +358,8 @@ namespace kGIS_App
             this.eagleEyeMapControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("eagleEyeMapControl.OcxState")));
             this.eagleEyeMapControl.Size = new System.Drawing.Size(322, 206);
             this.eagleEyeMapControl.TabIndex = 2;
+            this.eagleEyeMapControl.OnMouseDown += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseDownEventHandler(this.eagleEyeMapControl_OnMouseDown);
+            this.eagleEyeMapControl.OnMouseMove += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseMoveEventHandler(this.eagleEyeMapControl_OnMouseMove);
             // 
             // Form1
             // 
@@ -396,14 +405,14 @@ namespace kGIS_App
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 新建ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem NewWorkFactoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenMxdToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 另存为工作空间ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SaveWorkFactorySpaceToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private ESRI.ArcGIS.Controls.AxToolbarControl axToolbarControl1;
         private ESRI.ArcGIS.Controls.AxTOCControl mainTocControl;
         private ESRI.ArcGIS.Controls.AxMapControl eagleEyeMapControl;
-        private System.Windows.Forms.ToolStripMenuItem 另存为工作空间ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem SaveAsWorkFactorySpaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 数据ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LoadShpDocumentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LoadGridDataToolStripMenuItem;
@@ -416,7 +425,7 @@ namespace kGIS_App
         private System.Windows.Forms.ToolStripMenuItem 栅格数据空间分析ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 栅格计算ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 栅格统计ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 密度分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DensityAnalystToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 距离分析ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 重分类ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LoadPostGISDataToolStripMenuItem;
