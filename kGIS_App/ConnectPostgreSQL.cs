@@ -8,20 +8,29 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Npgsql;
+using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.SystemUI;
+using ESRI.ArcGIS.Controls;
 
 namespace kGIS_App
 {
     public partial class ConnectPostgreSQL : Form
     {
-        string connectIP, connectPort, connectDatabaseName, connectUserName, connectPassword;
-        NpgsqlConnection connection;
-        string coordinateField, shpPath;
+        string connectIP, connectPort, connectDatabaseName, connectUserName, connectPassword;//连接相关设置
+        NpgsqlConnection connection;//与数据库的连接
+        string coordinateField, shpPath;//资料相关设置
+        AxMapControl mainMapControl = new AxMapControl();//主窗口中的主地图
+        MainForm mainForm = new MainForm();//获取主窗口
 
-        public ConnectPostgreSQL()
+        public ConnectPostgreSQL(MainForm mainForm, AxMapControl mainMap)
         {
             InitializeComponent();
+            this.mainForm = mainForm;
+            mainMapControl = mainMap;
         }
 
+        #region 窗体信息获取
+        #region 连接数据库
         /// <summary>
         /// 连接数据库
         /// </summary>
@@ -55,6 +64,7 @@ namespace kGIS_App
                 MessageBox.Show("Connection Successfully!");
             }
         }
+        #endregion
 
         private void cmbPoint_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -64,25 +74,6 @@ namespace kGIS_App
         private void cmbPoint_Click(object sender, EventArgs e)
         {
 
-        }
-
-        /// <summary>
-        /// 将PostgreSQL的数据导出为shp文件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnImportData_Click(object sender, EventArgs e)
-        {
-            string sqlCommand = "select " + coordinateField + " from " + tbxTableName + " limit 1;";
-            NpgsqlCommand command = new NpgsqlCommand(sqlCommand, connection);
-            NpgsqlDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                Console.WriteLine(reader.GetString(0));
-                kShpLayer.kShpPoint pt = new kShpLayer.kShpPoint();
-
-            }
         }
 
         private void cmbPoint_DropDown(object sender, EventArgs e)
@@ -97,9 +88,9 @@ namespace kGIS_App
                 NpgsqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Console.WriteLine(reader.GetString(0));
                     cmbPoint.Items.Add(reader.GetString(0));
                 }
+                reader.Close();
             }
             catch (Exception ex)
             {
@@ -107,5 +98,40 @@ namespace kGIS_App
             }
         }
 
+        private void ConnectPostgreSQL_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            mainForm.SynchronizeEagleEye();
+        }
+        #endregion
+        #region 从数据库中导出数据为shp文件
+        /// <summary>
+        /// 将PostgreSQL的数据导出为shp文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnImportData_Click(object sender, EventArgs e)
+        {
+            List<kShpLayer.kShpPoint> shpPoints = new List<kShpLayer.kShpPoint>();//从数据库中读取的所有点
+            kShpLayer shpLayer = new kShpLayer();//新建的shp图层
+
+            //从数据库中读取数据
+            string sqlCommand = "select " + coordinateField + " from " + tbxTableName.Text + " limit 100;";
+            NpgsqlCommand command = new NpgsqlCommand(sqlCommand, connection);
+            NpgsqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                kShpLayer.kShpPoint pt = new kShpLayer.kShpPoint(reader.GetString(0));
+                shpPoints.Add(pt);
+            }
+            reader.Close();
+            //读取数据完毕后添加到新图层中
+            IFeatureLayer featureLayer = shpLayer.CreateShpFromPoint(shpPoints, tbxShpPath.Text);
+            mainMapControl.Map.AddLayer(featureLayer);
+
+            //同步鹰眼
+            mainForm.SynchronizeEagleEye();
+        }
+        #endregion
     }
 }

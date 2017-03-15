@@ -45,7 +45,7 @@
             this.btnImportData = new System.Windows.Forms.Button();
             this.cmbPoint = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbxShpPath = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnDatabaseConnect
@@ -197,12 +197,12 @@
             this.label6.TabIndex = 24;
             this.label6.Text = "Shp Path";
             // 
-            // textBox1
+            // tbxShpPath
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 208);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(249, 21);
-            this.textBox1.TabIndex = 23;
+            this.tbxShpPath.Location = new System.Drawing.Point(12, 208);
+            this.tbxShpPath.Name = "tbxShpPath";
+            this.tbxShpPath.Size = new System.Drawing.Size(249, 21);
+            this.tbxShpPath.TabIndex = 23;
             // 
             // ConnectPostgreSQL
             // 
@@ -210,7 +210,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 251);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.tbxShpPath);
             this.Controls.Add(this.cmbPoint);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label10);
@@ -229,6 +229,7 @@
             this.Controls.Add(this.btnDatabaseConnect);
             this.Name = "ConnectPostgreSQL";
             this.Text = "ConnectPostgreSQL";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ConnectPostgreSQL_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -253,6 +254,6 @@
         private System.Windows.Forms.Button btnImportData;
         private System.Windows.Forms.ComboBox cmbPoint;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbxShpPath;
     }
 }

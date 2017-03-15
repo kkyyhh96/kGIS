@@ -28,16 +28,23 @@ namespace kGIS_App
                 this.x = x;
                 this.y = y;
             }
+            public kShpPoint(string coordinates)
+            {
+                this.x = Convert.ToDouble(coordinates.Split(',')[0].Split('(')[1]);
+                this.y = Convert.ToDouble(coordinates.Split(',')[1].Split(')')[0]);
+            }
         }
-
+        #region 从点数据中创建一个shp图层
         /// <summary>
         /// 从点数据中创建一个shp图层
         /// </summary>
         /// <param name="kShpPointList">点数据列表</param>
         /// <param name="filePath">shp文件保存路径</param>
         /// <returns></returns>
-        private IFeatureLayer CreateShpFromPoint(List<kShpPoint> kShpPointList, string filePath)
+        public IFeatureLayer CreateShpFromPoint(List<kShpPoint> kShpPointList, string filePath)
         {
+            //try
+            //{
             //获取shp文件的名称
             int index = filePath.LastIndexOf('\\');
             string folder = filePath.Substring(0, index);
@@ -78,19 +85,25 @@ namespace kGIS_App
             IFeatureClass featureClass = kFeatureWorkSpace.CreateFeatureClass(shpName, fields, null, null, esriFeatureType.esriFTSimple, "Shape", "");
             IPoint point = new PointClass();
 
+            //使用流的方法批量添加点
+            IFeatureCursor featureCursor = featureClass.Insert(true);
+
             for (int i = 0; i < kShpPointList.Count; i++)
             {
                 point.X = kShpPointList[i].x;
                 point.Y = kShpPointList[i].y;
-                IFeature feature = featureClass.CreateFeature();
-                feature.Shape = point;
-                feature.Store();
+                IFeatureBuffer featureBuffer = featureClass.CreateFeatureBuffer();
+                featureBuffer.Shape = point;
+                featureCursor.InsertFeature(featureBuffer);
             }
+            featureCursor.Flush();
 
             IFeatureLayer featureLayer = new FeatureLayerClass();
             featureLayer.Name = shpName;
             featureLayer.FeatureClass = featureClass;
             return featureLayer;
         }
+        #endregion
+
     }
 }

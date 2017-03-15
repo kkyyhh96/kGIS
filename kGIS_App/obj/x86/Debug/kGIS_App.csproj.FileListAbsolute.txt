@@ -1,7 +1,6 @@
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\bin\Debug\kGIS_App.exe
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\bin\Debug\kGIS_App.pdb
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.csprojResolveAssemblyReference.cache
-e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.Form1.resources
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.Properties.Resources.resources
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.csproj.GenerateResource.Cache
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.exe
@@ -10,3 +9,4 @@ e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\bin\Debug\k
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.ConnectPostgreSQL.resources
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.csproj.ResolveComReference.cache
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.DensityAnalystForm.resources
+e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.MainForm.resources

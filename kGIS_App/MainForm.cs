@@ -16,13 +16,14 @@ using ESRI.ArcGIS.Display;
 
 namespace kGIS_App
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
-
+        #region 文件
+        #region 打开mxd文档
         /// <summary>
         /// 打开mxd文档
         /// </summary>
@@ -53,9 +54,109 @@ namespace kGIS_App
                 }
             }
         }
-
+        #endregion
+        #region 保存mxd文档
         /// <summary>
-        /// 加载mxd文档
+        /// 保存mxd文档
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveWorkFactorySpaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string saveMxdFileName = mainMapControl.DocumentFilename;
+                IMapDocument mapDocument = new MapDocumentClass();
+                mapDocument.New(saveMxdFileName);
+                mapDocument.ReplaceContents(mainMapControl.Map as IMxdContents);
+                mapDocument.Save(mapDocument.UsesRelativePaths, true);
+                mapDocument.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+        #endregion
+        #region 另存为地图文档
+        /// <summary>
+        /// 另存为地图文档
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveAsWorkFactorySpaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Title = "请选择另保存路径";
+                saveFileDialog.OverwritePrompt = true;
+                saveFileDialog.Filter = "Arcmap文档(*.mxd)|x.mxd|ArcMap模板(*.mxt)|*.mxt";
+                saveFileDialog.RestoreDirectory = true;
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string saveMxdFileName = saveFileDialog.FileName;
+
+                    IMapDocument mapDocument = new MapDocumentClass();
+                    mapDocument.New(saveMxdFileName);
+                    mapDocument.ReplaceContents(mainMapControl.Map as IMxdContents);
+                    mapDocument.Save(mapDocument.UsesRelativePaths, true);
+                    mapDocument.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+        #endregion
+        #region 新建空白mxd文档
+        /// <summary>
+        /// 新建空白mxd文档
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewWorkFactoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string saveMxdFileName = mainMapControl.DocumentFilename;
+                IMapDocument mapDocument = new MapDocumentClass();
+                if (saveMxdFileName == null)
+                {
+                    //如果名称不存在,则输入名称
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.Title = "请选择保存路径";
+                    saveFileDialog.OverwritePrompt = true;
+                    saveFileDialog.Filter = "Arcmap文档(*.mxd)|x.mxd|ArcMap模板(*.mxt)|*.mxt";
+                    saveFileDialog.RestoreDirectory = true;
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        saveMxdFileName = saveFileDialog.FileName;
+                        mainMapControl.DocumentFilename = saveMxdFileName;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                mapDocument.New(saveMxdFileName);
+                mapDocument.ReplaceContents(mainMapControl.Map as IMxdContents);
+                mapDocument.Save(mapDocument.UsesRelativePaths, true);
+                mapDocument.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+        }
+        #endregion
+        #endregion
+        #region 数据
+        #region 加载shp文件
+        /// <summary>
+        /// 加载shp文档
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -87,7 +188,8 @@ namespace kGIS_App
                 }
             }
         }
-
+        #endregion
+        #region 加载栅格数据
         /// <summary>
         /// 加载栅格数据
         /// </summary>
@@ -132,7 +234,45 @@ namespace kGIS_App
             //同步鹰眼
             SynchronizeEagleEye();
         }
-
+        #endregion
+        #region 加载PostGIS数据
+        /// <summary>
+        /// 点击加载PostGIS数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LoadPostGISDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //出现连接PostgreSQL数据库的窗体
+            ConnectPostgreSQL connectPostgreSQL = new ConnectPostgreSQL(this, this.mainMapControl);
+            connectPostgreSQL.Show();
+            //同步鹰眼
+            SynchronizeEagleEye();
+        }
+        #endregion
+        #endregion
+        #region 鹰眼
+        #region 同步鹰眼
+        /// <summary>
+        /// 同步鹰眼
+        /// </summary>
+        public void SynchronizeEagleEye()
+        {
+            //获取主图图层
+            if (mainMapControl.LayerCount > 0)
+            {
+                eagleEyeMapControl.Map = new MapClass();
+                //确保鹰眼视图与数据视图的图层上下顺序保持一致
+                for (int i = mainMapControl.Map.LayerCount - 1; i >= 0; i--)
+                {
+                    eagleEyeMapControl.AddLayer(mainMapControl.get_Layer(i));
+                }
+                eagleEyeMapControl.Extent = mainMapControl.FullExtent;
+                eagleEyeMapControl.Refresh();
+            }
+        }
+        #endregion
+        #region 鹰眼
         private void mainMapControl_OnExtentUpdated(object sender, IMapControlEvents2_OnExtentUpdatedEvent e)
         {
             // 得到新范围
@@ -167,25 +307,6 @@ namespace kGIS_App
             SynchronizeEagleEye();
         }
 
-        /// <summary>
-        /// 同步鹰眼
-        /// </summary>
-        private void SynchronizeEagleEye()
-        {
-            //获取主图图层
-            if (mainMapControl.LayerCount > 0)
-            {
-                eagleEyeMapControl.Map = new MapClass();
-                //确保鹰眼视图与数据视图的图层上下顺序保持一致
-                for (int i = mainMapControl.Map.LayerCount - 1; i >= 0; i--)
-                {
-                    eagleEyeMapControl.AddLayer(mainMapControl.get_Layer(i));
-                }
-                eagleEyeMapControl.Extent = mainMapControl.FullExtent;
-                eagleEyeMapControl.Refresh();
-            }
-        }
-
         private void eagleEyeMapControl_OnMouseMove(object sender, IMapControlEvents2_OnMouseMoveEvent e)
         {
             if (e.button == 1)
@@ -216,98 +337,22 @@ namespace kGIS_App
                 }
             }
         }
-
+        #endregion
+        #endregion
+        #region 栅格分析
+        #region 密度分析
+        /// <summary>
+        /// 点击密度分析的按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DensityAnalystToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //出现密度分析的窗体
             DensityAnalystForm densityAnalystForm = new DensityAnalystForm();
             densityAnalystForm.Show();
         }
-
-        private void LoadPostGISDataToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ConnectPostgreSQL connectPostgreSQL = new ConnectPostgreSQL();
-            connectPostgreSQL.Show();
-        }
-
-        /// <summary>
-        /// 保存地图文档
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SaveWorkFactorySpaceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string saveMxdFileName = mainMapControl.DocumentFilename;
-                IMapDocument mapDocument = new MapDocumentClass();
-                if (saveMxdFileName == null)
-                {
-                    //如果名称不存在,则输入名称
-                    SaveFileDialog saveFileDialog = new SaveFileDialog();
-                    saveFileDialog.Title = "请选择保存路径";
-                    saveFileDialog.OverwritePrompt = true;
-                    saveFileDialog.Filter = "Arcmap文档(*.mxd)|x.mxd|ArcMap模板(*.mxt)|*.mxt";
-                    saveFileDialog.RestoreDirectory = true;
-                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        saveMxdFileName = saveFileDialog.FileName;
-                        mainMapControl.DocumentFilename = saveMxdFileName;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                mapDocument.New(saveMxdFileName);
-                mapDocument.ReplaceContents(mainMapControl.Map as IMxdContents);
-                mapDocument.Save(mapDocument.UsesRelativePaths, true);
-                mapDocument.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        /// <summary>
-        /// 另存为地图文档
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SaveAsWorkFactorySpaceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Title = "请选择另保存路径";
-                saveFileDialog.OverwritePrompt = true;
-                saveFileDialog.Filter = "Arcmap文档(*.mxd)|x.mxd|ArcMap模板(*.mxt)|*.mxt";
-                saveFileDialog.RestoreDirectory = true;
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string saveMxdFileName = saveFileDialog.FileName;
-
-                    IMapDocument mapDocument = new MapDocumentClass();
-                    mapDocument.New(saveMxdFileName);
-                    mapDocument.ReplaceContents(mainMapControl.Map as IMxdContents);
-                    mapDocument.Save(mapDocument.UsesRelativePaths, true);
-                    mapDocument.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
-        /// <summary>
-        /// 新建空白地图文档
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NewWorkFactoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveWorkFactorySpaceToolStripMenuItem_Click(sender, e);
-        }
+        #endregion
+        #endregion
     }
 }
