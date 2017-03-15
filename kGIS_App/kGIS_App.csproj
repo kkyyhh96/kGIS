@@ -141,6 +141,12 @@
     <Compile Include="ConnectPostgreSQL.Designer.cs">
       <DependentUpon>ConnectPostgreSQL.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataAttributeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataAttributeForm.Designer.cs">
+      <DependentUpon>DataAttributeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DensityAnalystForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +168,9 @@
     </Compile>
     <EmbeddedResource Include="ConnectPostgreSQL.resx">
       <DependentUpon>ConnectPostgreSQL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataAttributeForm.resx">
+      <DependentUpon>DataAttributeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DensityAnalystForm.resx">
       <DependentUpon>DensityAnalystForm.cs</DependentUpon>

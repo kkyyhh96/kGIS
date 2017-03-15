@@ -48,6 +48,13 @@ namespace kGIS_App
             this.LoadShpDocumentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadGridDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadPostGISDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.LargeScaleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SmallScaleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LargeScaleRecToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SmallScaleRecToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.属性查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.空间查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,13 +72,8 @@ namespace kGIS_App
             this.axToolbarControl1 = new ESRI.ArcGIS.Controls.AxToolbarControl();
             this.mainTocControl = new ESRI.ArcGIS.Controls.AxTOCControl();
             this.eagleEyeMapControl = new ESRI.ArcGIS.Controls.AxMapControl();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.放大ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.缩小ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.拉框放大ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.拉框缩小ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.漫游ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.属性表ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axLicenseControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainMapControl)).BeginInit();
             this.mapViewer.SuspendLayout();
@@ -82,6 +84,7 @@ namespace kGIS_App
             ((System.ComponentModel.ISupportInitialize)(this.axToolbarControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainTocControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.eagleEyeMapControl)).BeginInit();
+            this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // axLicenseControl1
@@ -100,6 +103,7 @@ namespace kGIS_App
             this.mainMapControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mainMapControl.OcxState")));
             this.mainMapControl.Size = new System.Drawing.Size(480, 462);
             this.mainMapControl.TabIndex = 1;
+            this.mainMapControl.OnMouseDown += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseDownEventHandler(this.mainMapControl_OnMouseDown);
             this.mainMapControl.OnExtentUpdated += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnExtentUpdatedEventHandler(this.mainMapControl_OnExtentUpdated);
             this.mainMapControl.OnMapReplaced += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMapReplacedEventHandler(this.mainMapControl_OnMapReplaced);
             // 
@@ -140,7 +144,7 @@ namespace kGIS_App
             this.pageLayoutTabPage.Location = new System.Drawing.Point(4, 4);
             this.pageLayoutTabPage.Name = "pageLayoutTabPage";
             this.pageLayoutTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.pageLayoutTabPage.Size = new System.Drawing.Size(492, 474);
+            this.pageLayoutTabPage.Size = new System.Drawing.Size(492, 464);
             this.pageLayoutTabPage.TabIndex = 1;
             this.pageLayoutTabPage.Text = "布局视图";
             this.pageLayoutTabPage.UseVisualStyleBackColor = true;
@@ -244,6 +248,59 @@ namespace kGIS_App
             this.LoadPostGISDataToolStripMenuItem.Text = "加载PostGIS数据";
             this.LoadPostGISDataToolStripMenuItem.Click += new System.EventHandler(this.LoadPostGISDataToolStripMenuItem_Click);
             // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.LargeScaleToolStripMenuItem,
+            this.SmallScaleToolStripMenuItem,
+            this.LargeScaleRecToolStripMenuItem,
+            this.SmallScaleRecToolStripMenuItem,
+            this.PanToolStripMenuItem});
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(45, 20);
+            this.toolStripMenuItem1.Text = "视图";
+            // 
+            // LargeScaleToolStripMenuItem
+            // 
+            this.LargeScaleToolStripMenuItem.Name = "LargeScaleToolStripMenuItem";
+            this.LargeScaleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.LargeScaleToolStripMenuItem.Text = "放大";
+            this.LargeScaleToolStripMenuItem.Click += new System.EventHandler(this.LargeScaleToolStripMenuItem_Click);
+            // 
+            // SmallScaleToolStripMenuItem
+            // 
+            this.SmallScaleToolStripMenuItem.Name = "SmallScaleToolStripMenuItem";
+            this.SmallScaleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.SmallScaleToolStripMenuItem.Text = "缩小";
+            this.SmallScaleToolStripMenuItem.Click += new System.EventHandler(this.SmallScaleToolStripMenuItem_Click);
+            // 
+            // LargeScaleRecToolStripMenuItem
+            // 
+            this.LargeScaleRecToolStripMenuItem.Name = "LargeScaleRecToolStripMenuItem";
+            this.LargeScaleRecToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.LargeScaleRecToolStripMenuItem.Text = "拉框放大";
+            this.LargeScaleRecToolStripMenuItem.Click += new System.EventHandler(this.LargeScaleRecToolStripMenuItem_Click);
+            // 
+            // SmallScaleRecToolStripMenuItem
+            // 
+            this.SmallScaleRecToolStripMenuItem.Name = "SmallScaleRecToolStripMenuItem";
+            this.SmallScaleRecToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.SmallScaleRecToolStripMenuItem.Text = "拉框缩小";
+            this.SmallScaleRecToolStripMenuItem.Click += new System.EventHandler(this.SmallScaleRecToolStripMenuItem_Click);
+            // 
+            // PanToolStripMenuItem
+            // 
+            this.PanToolStripMenuItem.Name = "PanToolStripMenuItem";
+            this.PanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.PanToolStripMenuItem.Text = "漫游";
+            this.PanToolStripMenuItem.Click += new System.EventHandler(this.PanToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(45, 20);
+            this.toolStripMenuItem2.Text = "编辑";
+            // 
             // 查询ToolStripMenuItem
             // 
             this.查询ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -256,13 +313,13 @@ namespace kGIS_App
             // 属性查询ToolStripMenuItem
             // 
             this.属性查询ToolStripMenuItem.Name = "属性查询ToolStripMenuItem";
-            this.属性查询ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.属性查询ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.属性查询ToolStripMenuItem.Text = "属性查询";
             // 
             // 空间查询ToolStripMenuItem
             // 
             this.空间查询ToolStripMenuItem.Name = "空间查询ToolStripMenuItem";
-            this.空间查询ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.空间查询ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.空间查询ToolStripMenuItem.Text = "空间查询";
             // 
             // 矢量数据空间分析ToolStripMenuItem
@@ -278,19 +335,19 @@ namespace kGIS_App
             // 缓冲区ToolStripMenuItem
             // 
             this.缓冲区ToolStripMenuItem.Name = "缓冲区ToolStripMenuItem";
-            this.缓冲区ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.缓冲区ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.缓冲区ToolStripMenuItem.Text = "缓冲区";
             // 
             // 叠加分析ToolStripMenuItem
             // 
             this.叠加分析ToolStripMenuItem.Name = "叠加分析ToolStripMenuItem";
-            this.叠加分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.叠加分析ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.叠加分析ToolStripMenuItem.Text = "叠加分析";
             // 
             // 矢栅转换ToolStripMenuItem
             // 
             this.矢栅转换ToolStripMenuItem.Name = "矢栅转换ToolStripMenuItem";
-            this.矢栅转换ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.矢栅转换ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.矢栅转换ToolStripMenuItem.Text = "矢栅转换";
             // 
             // 栅格数据空间分析ToolStripMenuItem
@@ -308,32 +365,32 @@ namespace kGIS_App
             // 栅格计算ToolStripMenuItem
             // 
             this.栅格计算ToolStripMenuItem.Name = "栅格计算ToolStripMenuItem";
-            this.栅格计算ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.栅格计算ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.栅格计算ToolStripMenuItem.Text = "栅格计算";
             // 
             // 栅格统计ToolStripMenuItem
             // 
             this.栅格统计ToolStripMenuItem.Name = "栅格统计ToolStripMenuItem";
-            this.栅格统计ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.栅格统计ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.栅格统计ToolStripMenuItem.Text = "栅格统计";
             // 
             // DensityAnalystToolStripMenuItem
             // 
             this.DensityAnalystToolStripMenuItem.Name = "DensityAnalystToolStripMenuItem";
-            this.DensityAnalystToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.DensityAnalystToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.DensityAnalystToolStripMenuItem.Text = "密度分析";
             this.DensityAnalystToolStripMenuItem.Click += new System.EventHandler(this.DensityAnalystToolStripMenuItem_Click);
             // 
             // 距离分析ToolStripMenuItem
             // 
             this.距离分析ToolStripMenuItem.Name = "距离分析ToolStripMenuItem";
-            this.距离分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.距离分析ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.距离分析ToolStripMenuItem.Text = "距离分析";
             // 
             // 重分类ToolStripMenuItem
             // 
             this.重分类ToolStripMenuItem.Name = "重分类ToolStripMenuItem";
-            this.重分类ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.重分类ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.重分类ToolStripMenuItem.Text = "重分类";
             // 
             // statusStrip1
@@ -359,6 +416,7 @@ namespace kGIS_App
             this.mainTocControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mainTocControl.OcxState")));
             this.mainTocControl.Size = new System.Drawing.Size(322, 265);
             this.mainTocControl.TabIndex = 8;
+            this.mainTocControl.OnMouseDown += new ESRI.ArcGIS.Controls.ITOCControlEvents_Ax_OnMouseDownEventHandler(this.mainTocControl_OnMouseDown);
             // 
             // eagleEyeMapControl
             // 
@@ -370,53 +428,18 @@ namespace kGIS_App
             this.eagleEyeMapControl.OnMouseDown += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseDownEventHandler(this.eagleEyeMapControl_OnMouseDown);
             this.eagleEyeMapControl.OnMouseMove += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseMoveEventHandler(this.eagleEyeMapControl_OnMouseMove);
             // 
-            // toolStripMenuItem1
+            // contextMenuStrip2
             // 
-            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.放大ToolStripMenuItem,
-            this.缩小ToolStripMenuItem,
-            this.拉框放大ToolStripMenuItem,
-            this.拉框缩小ToolStripMenuItem,
-            this.漫游ToolStripMenuItem});
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(45, 20);
-            this.toolStripMenuItem1.Text = "视图";
+            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.属性表ToolStripMenuItem});
+            this.contextMenuStrip2.Name = "contextMenuStrip2";
+            this.contextMenuStrip2.Size = new System.Drawing.Size(114, 26);
             // 
-            // 放大ToolStripMenuItem
+            // 属性表ToolStripMenuItem
             // 
-            this.放大ToolStripMenuItem.Name = "放大ToolStripMenuItem";
-            this.放大ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.放大ToolStripMenuItem.Text = "放大";
-            // 
-            // 缩小ToolStripMenuItem
-            // 
-            this.缩小ToolStripMenuItem.Name = "缩小ToolStripMenuItem";
-            this.缩小ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.缩小ToolStripMenuItem.Text = "缩小";
-            // 
-            // 拉框放大ToolStripMenuItem
-            // 
-            this.拉框放大ToolStripMenuItem.Name = "拉框放大ToolStripMenuItem";
-            this.拉框放大ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.拉框放大ToolStripMenuItem.Text = "拉框放大";
-            // 
-            // 拉框缩小ToolStripMenuItem
-            // 
-            this.拉框缩小ToolStripMenuItem.Name = "拉框缩小ToolStripMenuItem";
-            this.拉框缩小ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.拉框缩小ToolStripMenuItem.Text = "拉框缩小";
-            // 
-            // 漫游ToolStripMenuItem
-            // 
-            this.漫游ToolStripMenuItem.Name = "漫游ToolStripMenuItem";
-            this.漫游ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.漫游ToolStripMenuItem.Text = "漫游";
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(45, 20);
-            this.toolStripMenuItem2.Text = "编辑";
+            this.属性表ToolStripMenuItem.Name = "属性表ToolStripMenuItem";
+            this.属性表ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.属性表ToolStripMenuItem.Text = "属性表";
             // 
             // MainForm
             // 
@@ -445,6 +468,7 @@ namespace kGIS_App
             ((System.ComponentModel.ISupportInitialize)(this.axToolbarControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainTocControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.eagleEyeMapControl)).EndInit();
+            this.contextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -488,12 +512,14 @@ namespace kGIS_App
         private System.Windows.Forms.ToolStripMenuItem LoadPostGISDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 矢栅转换ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem 放大ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 缩小ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 拉框放大ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 拉框缩小ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 漫游ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LargeScaleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SmallScaleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LargeScaleRecToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SmallScaleRecToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem PanToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
+        private System.Windows.Forms.ToolStripMenuItem 属性表ToolStripMenuItem;
     }
 }
 

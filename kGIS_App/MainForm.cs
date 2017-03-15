@@ -354,5 +354,110 @@ namespace kGIS_App
         }
         #endregion
         #endregion
+        #region 显示
+        #region 放大
+        /// <summary>
+        /// 放大
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LargeScaleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            IEnvelope envelope = mainMapControl.Extent;
+            //设置放大倍数
+            envelope.Expand(0.5, 0.5, true);
+            mainMapControl.Extent = envelope;
+            mainMapControl.ActiveView.Refresh();
+        }
+        #endregion
+
+        #region 缩小
+        /// <summary>
+        /// 缩小
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SmallScaleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            IEnvelope envelope = mainMapControl.Extent;
+            //设置缩小倍数
+            envelope.Expand(1.5, 1.5, true);
+            mainMapControl.Extent = envelope;
+            mainMapControl.ActiveView.Refresh();
+        }
+        #endregion
+
+        #region 漫游
+        /// <summary>
+        /// 漫游全图
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PanToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mainMapControl.Pan();
+        }
+        #endregion
+
+        #region 拉框放大
+        bool largeScaleRec = false;
+        private void LargeScaleRecToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            largeScaleRec = !largeScaleRec;
+            smallScaleRec = false;
+        }
+        #endregion
+
+        #region 拉框缩小
+        bool smallScaleRec = false;
+        private void SmallScaleRecToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            smallScaleRec = !smallScaleRec;
+            largeScaleRec = false;
+        }
+
+        #endregion
+
+        #region 拉框
+        private void mainMapControl_OnMouseDown(object sender, IMapControlEvents2_OnMouseDownEvent e)
+        {
+            IEnvelope envelope = mainMapControl.TrackRectangle();
+
+            //如果范围为空则返回
+            if (envelope == null || envelope.IsEmpty || envelope.Height == 0 || envelope.Width == 0)
+            {
+                return;
+            }
+            //拉框缩小
+            if (smallScaleRec == true)
+            {
+                IActiveView activeView = mainMapControl.ActiveView;
+                double dWidth = activeView.Extent.Width * activeView.Extent.Width / envelope.Width;
+                double dHeight = activeView.Extent.Height * activeView.Extent.Height / envelope.Height;
+                double dXmin = activeView.Extent.XMin -
+                               ((envelope.XMin - activeView.Extent.XMin) * activeView.Extent.Width /
+                                envelope.Width);
+                double dYmin = activeView.Extent.YMin -
+                               ((envelope.YMin - activeView.Extent.YMin) * activeView.Extent.Height /
+                                envelope.Height);
+                double dXmax = dXmin + dWidth;
+                double dYmax = dYmin + dHeight;
+                envelope.PutCoords(dXmin, dYmin, dXmax, dYmax);
+            }
+            mainMapControl.Extent = envelope;
+            mainMapControl.ActiveView.Refresh();
+        }
+        #endregion
+
+        private void mainTocControl_OnMouseDown(object sender, ITOCControlEvents_OnMouseDownEvent e)
+        {
+            if (e.button == 2)
+            {
+                esriTOCControlItem item = esriTOCControlItem.esriTOCControlItemNone;
+                IBasicMap basicMap = null;
+            }
+        }
+        #endregion
+
     }
 }

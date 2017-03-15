@@ -43,8 +43,6 @@ namespace kGIS_App
         /// <returns></returns>
         public IFeatureLayer CreateShpFromPoint(List<kShpPoint> kShpPointList, string filePath)
         {
-            //try
-            //{
             //获取shp文件的名称
             int index = filePath.LastIndexOf('\\');
             string folder = filePath.Substring(0, index);
@@ -104,6 +102,5 @@ namespace kGIS_App
             return featureLayer;
         }
         #endregion
-
     }
 }
