@@ -13,6 +13,7 @@ using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.DataSourcesRaster;
 using ESRI.ArcGIS.Display;
+using DevComponents.DotNetBar;
 
 namespace kGIS_App
 {
@@ -349,7 +350,7 @@ namespace kGIS_App
         private void DensityAnalystToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //出现密度分析的窗体
-            DensityAnalystForm densityAnalystForm = new DensityAnalystForm();
+            DensityAnalystForm densityAnalystForm = new DensityAnalystForm(mainMapControl);
             densityAnalystForm.Show();
         }
         #endregion

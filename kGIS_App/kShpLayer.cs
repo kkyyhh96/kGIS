@@ -76,7 +76,6 @@ namespace kGIS_App
             IFieldEdit testFieldEdit = new FieldClass();
             testFieldEdit.Name_2 = "test";
             testFieldEdit.Type_2 = ESRI.ArcGIS.Geodatabase.esriFieldType.esriFieldTypeString;
-            testFieldEdit.DefaultValue_2 = "aaa";
             fieldsEdit.AddField(testFieldEdit);
 
             //建立要素集
@@ -92,6 +91,7 @@ namespace kGIS_App
                 point.Y = kShpPointList[i].y;
                 IFeatureBuffer featureBuffer = featureClass.CreateFeatureBuffer();
                 featureBuffer.Shape = point;
+                featureBuffer.set_Value(2, 1);
                 featureCursor.InsertFeature(featureBuffer);
             }
             featureCursor.Flush();

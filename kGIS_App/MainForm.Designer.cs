@@ -263,35 +263,35 @@ namespace kGIS_App
             // LargeScaleToolStripMenuItem
             // 
             this.LargeScaleToolStripMenuItem.Name = "LargeScaleToolStripMenuItem";
-            this.LargeScaleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.LargeScaleToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.LargeScaleToolStripMenuItem.Text = "放大";
             this.LargeScaleToolStripMenuItem.Click += new System.EventHandler(this.LargeScaleToolStripMenuItem_Click);
             // 
             // SmallScaleToolStripMenuItem
             // 
             this.SmallScaleToolStripMenuItem.Name = "SmallScaleToolStripMenuItem";
-            this.SmallScaleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.SmallScaleToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.SmallScaleToolStripMenuItem.Text = "缩小";
             this.SmallScaleToolStripMenuItem.Click += new System.EventHandler(this.SmallScaleToolStripMenuItem_Click);
             // 
             // LargeScaleRecToolStripMenuItem
             // 
             this.LargeScaleRecToolStripMenuItem.Name = "LargeScaleRecToolStripMenuItem";
-            this.LargeScaleRecToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.LargeScaleRecToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.LargeScaleRecToolStripMenuItem.Text = "拉框放大";
             this.LargeScaleRecToolStripMenuItem.Click += new System.EventHandler(this.LargeScaleRecToolStripMenuItem_Click);
             // 
             // SmallScaleRecToolStripMenuItem
             // 
             this.SmallScaleRecToolStripMenuItem.Name = "SmallScaleRecToolStripMenuItem";
-            this.SmallScaleRecToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.SmallScaleRecToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.SmallScaleRecToolStripMenuItem.Text = "拉框缩小";
             this.SmallScaleRecToolStripMenuItem.Click += new System.EventHandler(this.SmallScaleRecToolStripMenuItem_Click);
             // 
             // PanToolStripMenuItem
             // 
             this.PanToolStripMenuItem.Name = "PanToolStripMenuItem";
-            this.PanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.PanToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.PanToolStripMenuItem.Text = "漫游";
             this.PanToolStripMenuItem.Click += new System.EventHandler(this.PanToolStripMenuItem_Click);
             // 
@@ -438,7 +438,7 @@ namespace kGIS_App
             // 属性表ToolStripMenuItem
             // 
             this.属性表ToolStripMenuItem.Name = "属性表ToolStripMenuItem";
-            this.属性表ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.属性表ToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.属性表ToolStripMenuItem.Text = "属性表";
             // 
             // MainForm
