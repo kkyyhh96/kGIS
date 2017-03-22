@@ -13,6 +13,7 @@ using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.DataSourcesRaster;
 using ESRI.ArcGIS.Display;
+using ESRI.ArcGIS.DataSourcesGDB;
 using DevComponents.DotNetBar;
 
 namespace kGIS_App
@@ -450,15 +451,148 @@ namespace kGIS_App
         }
         #endregion
 
+        private DataAttributeForm dataAttributeForm = new DataAttributeForm();
+        private IFeatureLayer tocSelectFeatureLayer = null;//点击图层控件选择的图层
+        /// <summary>
+        /// 图层控件右键
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void mainTocControl_OnMouseDown(object sender, ITOCControlEvents_OnMouseDownEvent e)
         {
             if (e.button == 2)
             {
                 esriTOCControlItem item = esriTOCControlItem.esriTOCControlItemNone;
                 IBasicMap basicMap = null;
+                object data = null, unk = null;
+                ILayer layer = null;
+                //获取点击的位置,图层等
+                mainTocControl.HitTest(e.x, e.y, ref item, ref basicMap, ref layer, ref unk, ref data);
+
+                tocSelectFeatureLayer = layer as IFeatureLayer;
+                if (item == esriTOCControlItem.esriTOCControlItemLayer && tocSelectFeatureLayer != null)
+                {
+                    contextMenuStrip2.Show(Control.MousePosition);
+                }
             }
         }
         #endregion
 
+        private void LoadPersonalDBToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            IWorkspaceFactory pAccessWorkspaceFactory;
+
+            OpenFileDialog pOpenFileDialog = new OpenFileDialog();
+            pOpenFileDialog.Filter = "Personal Geodatabase(*.mdb)|*.mdb";
+            pOpenFileDialog.Title = "打开PersonGeodatabase文件";
+            pOpenFileDialog.ShowDialog();
+
+            string pFullPath = pOpenFileDialog.FileName;
+            if (pFullPath == "")
+            {
+                return;
+            }
+            pAccessWorkspaceFactory = new AccessWorkspaceFactory(); //using ESRI.ArcGIS.DataSourcesGDB;
+            //获取工作空间
+            IWorkspace pWorkspace = pAccessWorkspaceFactory.OpenFromFile(pFullPath, 0);
+
+
+            //加载工作空间里的数据
+
+            IEnumDataset pEnumDataset = pWorkspace.get_Datasets(ESRI.ArcGIS.Geodatabase.esriDatasetType.esriDTAny);
+            pEnumDataset.Reset();
+            //将Enum数据集中的数据一个个读到DataSet中
+            IDataset pDataset = pEnumDataset.Next();
+            //判断数据集是否有数据
+            while (pDataset != null)
+            {
+                if (pDataset is IFeatureDataset)  //要素数据集
+                {
+                    IFeatureWorkspace pFeatureWorkspace = (IFeatureWorkspace)pWorkspace;
+                    IFeatureDataset pFeatureDataset = pFeatureWorkspace.OpenFeatureDataset(pDataset.Name);
+                    IEnumDataset pEnumDataset1 = pFeatureDataset.Subsets;
+                    pEnumDataset1.Reset();
+                    IGroupLayer pGroupLayer = new GroupLayerClass();
+                    pGroupLayer.Name = pFeatureDataset.Name;
+                    IDataset pDataset1 = pEnumDataset1.Next();
+                    while (pDataset1 != null)
+                    {
+                        if (pDataset1 is IFeatureClass)  //要素类
+                        {
+                            IFeatureLayer pFeatureLayer = new FeatureLayerClass();
+                            pFeatureLayer.FeatureClass = pFeatureWorkspace.OpenFeatureClass(pDataset1.Name);
+                            if (pFeatureLayer.FeatureClass != null)
+                            {
+                                pFeatureLayer.Name = pFeatureLayer.FeatureClass.AliasName;
+                                pGroupLayer.Add(pFeatureLayer);
+                                mainMapControl.Map.AddLayer(pFeatureLayer);
+                            }
+                        }
+                        pDataset1 = pEnumDataset1.Next();
+                    }
+                }
+                else if (pDataset is IFeatureClass) //要素类
+                {
+                    IFeatureWorkspace pFeatureWorkspace = (IFeatureWorkspace)pWorkspace;
+                    IFeatureLayer pFeatureLayer = new FeatureLayerClass();
+                    pFeatureLayer.FeatureClass = pFeatureWorkspace.OpenFeatureClass(pDataset.Name);
+
+                    pFeatureLayer.Name = pFeatureLayer.FeatureClass.AliasName;
+                    mainMapControl.Map.AddLayer(pFeatureLayer);
+                }
+                else if (pDataset is IRasterDataset) //栅格数据集
+                {
+                    IRasterWorkspaceEx pRasterWorkspace = (IRasterWorkspaceEx)pWorkspace;
+                    IRasterDataset pRasterDataset = pRasterWorkspace.OpenRasterDataset(pDataset.Name);
+                    //影像金字塔判断与创建
+                    IRasterPyramid3 pRasPyrmid;
+                    pRasPyrmid = pRasterDataset as IRasterPyramid3;
+                    if (pRasPyrmid != null)
+                    {
+                        if (!(pRasPyrmid.Present))
+                        {
+                            pRasPyrmid.Create(); //创建金字塔
+                        }
+                    }
+                    IRasterLayer pRasterLayer = new RasterLayerClass();
+                    pRasterLayer.CreateFromDataset(pRasterDataset);
+                    ILayer pLayer = pRasterLayer as ILayer;
+                    mainMapControl.AddLayer(pLayer, 0);
+                }
+                pDataset = pEnumDataset.Next();
+            }
+
+            mainMapControl.ActiveView.Refresh();
+            //同步鹰眼
+            SynchronizeEagleEye();
+        }
+
+        private void AttributeFormToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dataAttributeForm.Show();
+            dataAttributeForm.currentLayer = tocSelectFeatureLayer;
+            dataAttributeForm.SetTable();
+        }
+
+        private void RemoveLayerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mainMapControl.Map.DeleteLayer(tocSelectFeatureLayer);
+        }
+
+        private void AttributeQueryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SpatialQueryForm spatialQueryForm = new SpatialQueryForm(mainMapControl);
+            spatialQueryForm.Show();
+        }
+
+        private void SpatialQueryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BufferToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

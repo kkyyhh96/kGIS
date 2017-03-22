@@ -15,6 +15,27 @@ namespace kGIS_App
     /// </summary>
     public class kShpLayer
     {
+        //shp文件里所有的属性值
+        public List<kShpField> fieldList = new List<kShpField>();
+
+        //shp文件属性
+        public class kShpField
+        {
+            public string fieldName;
+            public int pid;
+            public esriFieldType type;
+            public kShpField(string name, int pid)
+            {
+                fieldName = name;
+                this.pid = pid;
+                switch (pid)
+                {
+                    case 23: type = esriFieldType.esriFieldTypeInteger; break;
+                    case 701: type = esriFieldType.esriFieldTypeDouble; break;
+                    default: type = esriFieldType.esriFieldTypeString; break;
+                }
+            }
+        }
         /// <summary>
         /// shp文件点数据
         /// </summary>
@@ -22,6 +43,8 @@ namespace kGIS_App
         {
             public double x;
             public double y;
+            public List<string> fieldValue = new List<string>();
+
             public kShpPoint() { }
             public kShpPoint(double x, double y)
             {
@@ -43,63 +66,83 @@ namespace kGIS_App
         /// <returns></returns>
         public IFeatureLayer CreateShpFromPoint(List<kShpPoint> kShpPointList, string filePath)
         {
-            //获取shp文件的名称
-            int index = filePath.LastIndexOf('\\');
-            string folder = filePath.Substring(0, index);
-            string shpName = filePath.Substring(index + 1);
-
-            //创建工作空间工厂和工作空间
-            IWorkspaceFactory kWorkSpaceFactory = new ShapefileWorkspaceFactoryClass();
-            IFeatureWorkspace kFeatureWorkSpace = (IFeatureWorkspace)kWorkSpaceFactory.OpenFromFile(folder, 0);
-
-            //创建字段
-            IFields fields = new FieldsClass();
-            IFieldsEdit fieldsEdit = (IFieldsEdit)fields;
-
-            IField kField = new FieldClass();
-            IFieldEdit kFieldEdit = (IFieldEdit)kField;
-            kFieldEdit.Name_2 = "Shape";
-            kFieldEdit.Type_2 = esriFieldType.esriFieldTypeGeometry;
-            IGeometryDef kGeometryDef = new GeometryDefClass();
-            IGeometryDefEdit kGeometryDefEdit = (IGeometryDefEdit)kGeometryDef;
-            kGeometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;//设置为点数据
-
-            //定义坐标系
-            ISpatialReferenceFactory spatialReferenceFactory = new SpatialReferenceEnvironmentClass();
-            ISpatialReference spatialReference = spatialReferenceFactory.CreateGeographicCoordinateSystem((int)esriSRGeoCSType.esriSRGeoCS_WGS1984);
-            kGeometryDefEdit.SpatialReference_2 = spatialReference;
-            kFieldEdit.GeometryDef_2 = kGeometryDef;
-
-            //添加默认字段
-            fieldsEdit.AddField(kField);
-
-            IFieldEdit testFieldEdit = new FieldClass();
-            testFieldEdit.Name_2 = "test";
-            testFieldEdit.Type_2 = ESRI.ArcGIS.Geodatabase.esriFieldType.esriFieldTypeString;
-            fieldsEdit.AddField(testFieldEdit);
-
-            //建立要素集
-            IFeatureClass featureClass = kFeatureWorkSpace.CreateFeatureClass(shpName, fields, null, null, esriFeatureType.esriFTSimple, "Shape", "");
-            IPoint point = new PointClass();
-
-            //使用流的方法批量添加点
-            IFeatureCursor featureCursor = featureClass.Insert(true);
-
-            for (int i = 0; i < kShpPointList.Count; i++)
+            try
             {
-                point.X = kShpPointList[i].x;
-                point.Y = kShpPointList[i].y;
-                IFeatureBuffer featureBuffer = featureClass.CreateFeatureBuffer();
-                featureBuffer.Shape = point;
-                featureBuffer.set_Value(2, 1);
-                featureCursor.InsertFeature(featureBuffer);
-            }
-            featureCursor.Flush();
+                //获取shp文件的名称
+                int index = filePath.LastIndexOf('\\');
+                string folder = filePath.Substring(0, index);
+                string shpName = filePath.Substring(index + 1);
 
-            IFeatureLayer featureLayer = new FeatureLayerClass();
-            featureLayer.Name = shpName;
-            featureLayer.FeatureClass = featureClass;
-            return featureLayer;
+                //创建工作空间工厂和工作空间
+                IWorkspaceFactory kWorkSpaceFactory = new ShapefileWorkspaceFactoryClass();
+                IFeatureWorkspace kFeatureWorkSpace = (IFeatureWorkspace)kWorkSpaceFactory.OpenFromFile(folder, 0);
+
+                //创建字段
+                IFields fields = new FieldsClass();
+                IFieldsEdit fieldsEdit = (IFieldsEdit)fields;
+
+                IField kField = new FieldClass();
+                IFieldEdit kFieldEdit = (IFieldEdit)kField;
+                kFieldEdit.Name_2 = "Shape";
+                kFieldEdit.Type_2 = esriFieldType.esriFieldTypeGeometry;
+                IGeometryDef kGeometryDef = new GeometryDefClass();
+                IGeometryDefEdit kGeometryDefEdit = (IGeometryDefEdit)kGeometryDef;
+                kGeometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;//设置为点数据
+
+                //定义坐标系
+                ISpatialReferenceFactory spatialReferenceFactory = new SpatialReferenceEnvironmentClass();
+                ISpatialReference spatialReference = spatialReferenceFactory.CreateGeographicCoordinateSystem((int)esriSRGeoCSType.esriSRGeoCS_WGS1984);
+                kGeometryDefEdit.SpatialReference_2 = spatialReference;
+                kFieldEdit.GeometryDef_2 = kGeometryDef;
+
+                //添加几何属性字段
+                fieldsEdit.AddField(kField);
+
+                //添加所有字段
+                for (int i = 0; i < fieldList.Count; i++)
+                {
+                    IFieldEdit fieldEdit = new FieldClass();
+                    fieldEdit.Name_2 = fieldList[i].fieldName;
+                    fieldEdit.Type_2 = fieldList[i].type;
+                    //testFieldEdit.Type_2 = ESRI.ArcGIS.Geodatabase.esriFieldType.esriFieldTypeString;
+                    fieldsEdit.AddField(fieldEdit);
+                }
+
+                //建立要素集
+                IFeatureClass featureClass = kFeatureWorkSpace.CreateFeatureClass(shpName, fields, null, null, esriFeatureType.esriFTSimple, "Shape", "");
+                IPoint point = new PointClass();
+
+                //使用流的方法批量添加点
+                IFeatureCursor featureCursor = featureClass.Insert(true);
+
+                for (int i = 0; i < kShpPointList.Count; i++)
+                {
+                    point.X = kShpPointList[i].x;
+                    point.Y = kShpPointList[i].y;
+                    point.Z = 10;
+                    point.M = 10;
+                    IFeatureBuffer featureBuffer = featureClass.CreateFeatureBuffer();
+                    featureBuffer.Shape = point;
+                    //添加字段值
+                    for (int j = 0; j < kShpPointList[i].fieldValue.Count; j++)
+                    {
+
+                        featureBuffer.set_Value(2 + j, kShpPointList[i].fieldValue[j]);
+                    }
+                    featureCursor.InsertFeature(featureBuffer);
+                }
+                featureCursor.Flush();
+
+                IFeatureLayer featureLayer = new FeatureLayerClass();
+                featureLayer.Name = shpName;
+                featureLayer.FeatureClass = featureClass;
+                return featureLayer;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
         }
         #endregion
     }

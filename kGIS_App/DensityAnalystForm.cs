@@ -50,13 +50,16 @@ namespace kGIS_App
             try
             {
                 densityObject = rasterEnvironment as IDensityOp;
+
                 //核密度分析方法
                 outGeoDataset = densityObject.KernelDensity(inGeoDataset, ref searchRadius, Missing);//核密度分析方法
                 ShowResult(outGeoDataset, "KernelDensity");
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("请输入点图层");
+                //MessageBox.Show("请输入点图层");
+                //Console.WriteLine(ex.ToString());
+                MessageBox.Show(ex.ToString());
             };
         }
         #endregion
@@ -143,6 +146,7 @@ namespace kGIS_App
         {
             try
             {
+                cmbField.Items.Clear();
                 //根据图层名获取图层
                 string layerName = cmbInDataset.Text;
                 IMap map = mainMapControl.Map;
@@ -163,7 +167,7 @@ namespace kGIS_App
                 }
 
                 extentEnvironment = layer;
-                rasterEnvironment.SetExtent(esriRasterEnvSettingEnum.esriRasterEnvValue, ref extentEnvironment, Missing);
+                rasterEnvironment.SetExtent(esriRasterEnvSettingEnum.esriRasterEnvMaxOf, ref extentEnvironment, Missing);
             }
             catch (Exception ex)
             {
@@ -211,7 +215,7 @@ namespace kGIS_App
         }
 
         /// <summary>
-        /// 创建输入数据集
+        /// 选择计数字段
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -220,7 +224,7 @@ namespace kGIS_App
             try
             {
                 featureDescriptor = new FeatureClassDescriptorClass();
-                featureDescriptor.Create(featureClass, null, cmbField.SelectedText);
+                featureDescriptor.Create(featureClass, null, cmbField.Text);
 
                 inGeoDataset = featureDescriptor as IGeoDataset;
             }

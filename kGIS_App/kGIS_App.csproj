@@ -87,6 +87,10 @@
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="ESRI.ArcGIS.DataSourcesGDB, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="ESRI.ArcGIS.Editor, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -143,6 +147,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BufferForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BufferForm.Designer.cs">
+      <DependentUpon>BufferForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConnectPostgreSQL.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -174,6 +184,15 @@
     <Compile Include="LicenseInitializer.Designer.cs">
       <DependentUpon>LicenseInitializer.cs</DependentUpon>
     </Compile>
+    <Compile Include="SpatialQueryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpatialQueryForm.Designer.cs">
+      <DependentUpon>SpatialQueryForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="BufferForm.resx">
+      <DependentUpon>BufferForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ConnectPostgreSQL.resx">
       <DependentUpon>ConnectPostgreSQL.cs</DependentUpon>
     </EmbeddedResource>
@@ -196,6 +215,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SpatialQueryForm.resx">
+      <DependentUpon>SpatialQueryForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
