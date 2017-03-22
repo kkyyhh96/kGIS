@@ -126,7 +126,6 @@ namespace kGIS_App
                     //添加字段值
                     for (int j = 0; j < kShpPointList[i].fieldValue.Count; j++)
                     {
-
                         featureBuffer.set_Value(2 + j, kShpPointList[i].fieldValue[j]);
                     }
                     featureCursor.InsertFeature(featureBuffer);

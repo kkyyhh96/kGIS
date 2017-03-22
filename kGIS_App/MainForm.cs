@@ -592,7 +592,8 @@ namespace kGIS_App
 
         private void BufferToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            BufferForm bufferForm = new BufferForm(mainMapControl);
+            bufferForm.Show();
         }
     }
 }

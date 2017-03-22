@@ -44,7 +44,6 @@
             this.cmbLayerName.Name = "cmbLayerName";
             this.cmbLayerName.Size = new System.Drawing.Size(201, 20);
             this.cmbLayerName.TabIndex = 3;
-            this.cmbLayerName.SelectedIndexChanged += new System.EventHandler(this.cmbLayerName_SelectedIndexChanged);
             this.cmbLayerName.Click += new System.EventHandler(this.cmbLayerName_Click);
             // 
             // label1

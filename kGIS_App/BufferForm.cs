@@ -38,65 +38,72 @@ namespace kGIS_App
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            //获取shp文件的名称
-            int index = tbxPath.Text.LastIndexOf('\\');
-            string folder = tbxPath.Text.Substring(0, index);
-            string shpName = tbxPath.Text.Substring(index + 1);
-
-            //创建工作空间工厂和工作空间
-            IWorkspaceFactory kWorkSpaceFactory = new ShapefileWorkspaceFactoryClass();
-            IFeatureWorkspace kFeatureWorkSpace = (IFeatureWorkspace)kWorkSpaceFactory.OpenFromFile(folder, 0);
-
-            //创建字段
-            IFields fields = new FieldsClass();
-            IFieldsEdit fieldsEdit = (IFieldsEdit)fields;
-
-            IField kField = new FieldClass();
-            IFieldEdit kFieldEdit = (IFieldEdit)kField;
-            kFieldEdit.Name_2 = "Shape";
-            kFieldEdit.Type_2 = esriFieldType.esriFieldTypeGeometry;
-            IGeometryDef kGeometryDef = new GeometryDefClass();
-            IGeometryDefEdit kGeometryDefEdit = (IGeometryDefEdit)kGeometryDef;
-            kGeometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPolygon;//设置为面数据
-
-            //定义坐标系
-            ISpatialReferenceFactory spatialReferenceFactory = new SpatialReferenceEnvironmentClass();
-            ISpatialReference spatialReference = spatialReferenceFactory.CreateGeographicCoordinateSystem((int)esriSRGeoCSType.esriSRGeoCS_WGS1984);
-            kGeometryDefEdit.SpatialReference_2 = spatialReference;
-            kFieldEdit.GeometryDef_2 = kGeometryDef;
-
-            //建立要素集
-            IFeatureClass featureClass = kFeatureWorkSpace.CreateFeatureClass(shpName, fields, null, null, esriFeatureType.esriFTSimple, "Shape", "");
-
-            //使用流的方法批量添加点
-            IFeatureCursor featureCursor = featureClass.Insert(true);
-
-            for (int i = 0; i < kShpPointList.Count; i++)
+            try
             {
-                point.X = kShpPointList[i].x;
-                point.Y = kShpPointList[i].y;
-                point.Z = 10;
-                point.M = 10;
-                IFeatureBuffer featureBuffer = featureClass.CreateFeatureBuffer();
-                featureBuffer.Shape = point;
-                //添加字段值
-                for (int j = 0; j < kShpPointList[i].fieldValue.Count; j++)
+                //获取shp文件的名称
+                int index = tbxPath.Text.LastIndexOf('\\');
+                string folder = tbxPath.Text.Substring(0, index);
+                string shpName = tbxPath.Text.Substring(index + 1);
+
+                //创建工作空间工厂和工作空间
+                IWorkspaceFactory kWorkSpaceFactory = new ShapefileWorkspaceFactoryClass();
+                IFeatureWorkspace kFeatureWorkSpace = (IFeatureWorkspace)kWorkSpaceFactory.OpenFromFile(folder, 0);
+
+                //创建字段
+                IFields fields = new FieldsClass();
+                IFieldsEdit fieldsEdit = (IFieldsEdit)fields;
+
+                IField kField = new FieldClass();
+                IFieldEdit kFieldEdit = (IFieldEdit)kField;
+                kFieldEdit.Name_2 = "Shape";
+                kFieldEdit.Type_2 = esriFieldType.esriFieldTypeGeometry;
+                IGeometryDef kGeometryDef = new GeometryDefClass();
+                IGeometryDefEdit kGeometryDefEdit = (IGeometryDefEdit)kGeometryDef;
+                kGeometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPolygon;//设置为面数据
+                fieldsEdit.AddField(kField);
+
+                //定义坐标系
+                ISpatialReferenceFactory spatialReferenceFactory = new SpatialReferenceEnvironmentClass();
+                ISpatialReference spatialReference = spatialReferenceFactory.CreateGeographicCoordinateSystem((int)esriSRGeoCSType.esriSRGeoCS_WGS1984);
+                kGeometryDefEdit.SpatialReference_2 = spatialReference;
+                kFieldEdit.GeometryDef_2 = kGeometryDef;
+
+                //建立要素集
+                IFeatureClass featureClass = kFeatureWorkSpace.CreateFeatureClass(shpName, fields, null, null, esriFeatureType.esriFTSimple, "Shape", "");
+                IFeatureCursor featureCursor = featureClass.Insert(true);
+
+                //获取图层中所有需要构建缓冲区的要素
+                IFeatureLayer selectFeatureLayer = mainMapControl.Map.get_Layer(cmbLayerName.SelectedIndex) as IFeatureLayer;
+                IFeatureClass selectFeatureClass = selectFeatureLayer.FeatureClass;
+                IFeatureCursor selectFeatureCursor = selectFeatureClass.Search(null, false);
+                IFeature selectFeature = selectFeatureCursor.NextFeature();
+                //遍历所有需要构建缓冲区的要素
+                while (selectFeature != null)
                 {
+                    IGeometry selectGeometry = selectFeature.Shape;
+                    ITopologicalOperator topologicalOperator = (ITopologicalOperator)selectGeometry;
 
-                    featureBuffer.set_Value(2 + j, kShpPointList[i].fieldValue[j]);
+                    //进行缓冲区分析
+                    IGeometry bufferGeometry = topologicalOperator.Buffer(Convert.ToDouble(tbxRadius.Text));
+
+                    //创建新的要素作为缓冲区结果
+                    IFeatureBuffer featureBuffer = featureClass.CreateFeatureBuffer();
+                    featureBuffer.Shape = bufferGeometry;
+                    featureCursor.InsertFeature(featureBuffer);
+                    selectFeature = selectFeatureCursor.NextFeature();
                 }
-                featureCursor.InsertFeature(featureBuffer);
+                featureCursor.Flush();
+                //将缓冲区结果创建为新的shp文件并保存和显示
+                IFeatureLayer featureLayer = new FeatureLayerClass();
+                featureLayer.Name = shpName;
+                featureLayer.FeatureClass = featureClass;
+                mainMapControl.Map.AddLayer(featureLayer);
+                mainMapControl.ActiveView.Refresh();
             }
-            featureCursor.Flush();
-
-            IFeatureLayer featureLayer = new FeatureLayerClass();
-            featureLayer.Name = shpName;
-            featureLayer.FeatureClass = featureClass;
-        }
-
-        private void cmbLayerName_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }
