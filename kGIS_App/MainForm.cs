@@ -402,11 +402,13 @@ namespace kGIS_App
         #endregion
 
         #region 拉框放大
+        public int clickMode = 0;
         bool largeScaleRec = false;
         private void LargeScaleRecToolStripMenuItem_Click(object sender, EventArgs e)
         {
             largeScaleRec = !largeScaleRec;
             smallScaleRec = false;
+            clickMode = 1;
         }
         #endregion
 
@@ -416,6 +418,7 @@ namespace kGIS_App
         {
             smallScaleRec = !smallScaleRec;
             largeScaleRec = false;
+            clickMode = 1;
         }
 
         #endregion
@@ -423,15 +426,78 @@ namespace kGIS_App
         #region 拉框
         private void mainMapControl_OnMouseDown(object sender, IMapControlEvents2_OnMouseDownEvent e)
         {
-            IEnvelope envelope = mainMapControl.TrackRectangle();
+            switch (clickMode)
+            {
+                case 1://如果是拉框放大或者缩小
+                    LargeOrSmall(); break;
+                case 2://如果是空间选择
+                    SelectFeature(e); break;
+            }
+            mainMapControl.ActiveView.Refresh();
+        }
 
+        public double selectRadius;
+        private void SelectFeature(IMapControlEvents2_OnMouseDownEvent e)
+        {
+            //清除原先的选择集
+            mainMapControl.Map.ClearSelection();
+            IGeometry selectGeometry = null;
+            IPoint point = new PointClass();
+            switch (selectMethod)
+            {
+                case 1:
+                    //获取鼠标点
+                    IActiveView activeView = this.mainMapControl.ActiveView;
+                    point = activeView.ScreenDisplay.DisplayTransformation.ToMapPoint(e.x, e.y);
+
+                    //新建缓冲区作为查询的范围
+                    ITopologicalOperator topologicalOperator = (ITopologicalOperator)point;
+                    selectGeometry = topologicalOperator.Buffer(10).Envelope;
+                    break;
+                case 2:
+                    //获取矩形
+                    selectGeometry = mainMapControl.TrackRectangle();
+                    break;
+                case 3:
+                    //获取圆形
+                    selectGeometry = mainMapControl.TrackCircle();
+                    break;
+                case 4:
+                    //获取鼠标点
+                    IActiveView activeView_1 = this.mainMapControl.ActiveView;
+                    point = activeView_1.ScreenDisplay.DisplayTransformation.ToMapPoint(e.x, e.y);
+
+                    //新建缓冲区作为查询的范围
+                    ITopologicalOperator topologicalOperator_1 = (ITopologicalOperator)point;
+                    selectGeometry = topologicalOperator_1.Buffer(selectRadius).Envelope;
+                    break;
+            }
+            selectQueryFeature(selectGeometry);
+        }
+        public ILayer selectLayer;
+        private void selectQueryFeature(IGeometry geometry)
+        {
+            //空间查询,设置范围为包含
+            ISpatialFilter spatialFilter = new SpatialFilterClass();
+            spatialFilter.Geometry = geometry;
+            spatialFilter.SpatialRel = esriSpatialRelEnum.esriSpatialRelContains;
+
+            IFeatureLayer featureLayer = (IFeatureLayer)selectLayer;
+            IFeatureSelection featureSelection = featureLayer as IFeatureSelection;
+
+            featureSelection.SelectFeatures((IQueryFilter)spatialFilter, esriSelectionResultEnum.esriSelectionResultAdd, false);
+            IActiveView activeView = mainMapControl.Map as IActiveView;
+            activeView.PartialRefresh(esriViewDrawPhase.esriViewGeoSelection, null, activeView.Extent);
+        }
+        private void LargeOrSmall()
+        {
+            IEnvelope envelope = mainMapControl.TrackRectangle();
             //如果范围为空则返回
             if (envelope == null || envelope.IsEmpty || envelope.Height == 0 || envelope.Width == 0)
             {
-                return;
             }
             //拉框缩小
-            if (smallScaleRec == true)
+            else if (smallScaleRec == true)
             {
                 IActiveView activeView = mainMapControl.ActiveView;
                 double dWidth = activeView.Extent.Width * activeView.Extent.Width / envelope.Width;
@@ -446,8 +512,11 @@ namespace kGIS_App
                 double dYmax = dYmin + dHeight;
                 envelope.PutCoords(dXmin, dYmin, dXmax, dYmax);
             }
-            mainMapControl.Extent = envelope;
-            mainMapControl.ActiveView.Refresh();
+            //拉框放大
+            else if (largeScaleRec == true)
+            {
+                mainMapControl.Extent = envelope;
+            }
         }
         #endregion
 
@@ -496,9 +565,7 @@ namespace kGIS_App
             //获取工作空间
             IWorkspace pWorkspace = pAccessWorkspaceFactory.OpenFromFile(pFullPath, 0);
 
-
             //加载工作空间里的数据
-
             IEnumDataset pEnumDataset = pWorkspace.get_Datasets(ESRI.ArcGIS.Geodatabase.esriDatasetType.esriDTAny);
             pEnumDataset.Reset();
             //将Enum数据集中的数据一个个读到DataSet中
@@ -585,9 +652,11 @@ namespace kGIS_App
             spatialQueryForm.Show();
         }
 
+        public int selectMethod { set; get; }
         private void SpatialQueryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            SpatialSelectForm selectForm = new SpatialSelectForm(this, this.mainMapControl);
+            selectForm.Show();
         }
 
         private void BufferToolStripMenuItem_Click(object sender, EventArgs e)

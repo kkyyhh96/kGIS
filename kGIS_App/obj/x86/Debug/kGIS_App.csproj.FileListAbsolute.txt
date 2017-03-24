@@ -13,3 +13,4 @@ e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Deb
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.DataAttributeForm.resources
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.SpatialQueryForm.resources
 e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.BufferForm.resources
+e:\Users\KYH\documents\visual studio 2012\Projects\kGIS_App\kGIS_App\obj\x86\Debug\kGIS_App.SpatialSelectForm.resources
