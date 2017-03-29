@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -663,6 +664,105 @@ namespace kGIS_App
         {
             BufferForm bufferForm = new BufferForm(mainMapControl);
             bufferForm.Show();
+        }
+
+        /// <summary>
+        /// 加载poy数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LoadPoyDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.CheckFileExists = true;
+            openFileDialog.Title = "加载poy文档";
+            openFileDialog.Filter = "poy文档(*.poy)|*.poy;";
+            openFileDialog.RestoreDirectory = true;
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    string poyFullPath = openFileDialog.FileName;
+                    if (poyFullPath != "")
+                    {
+                        kShpLayer shpLayer = new kShpLayer();
+                        List<kShpLayer.kShpPoint> poyPoints = new List<kShpLayer.kShpPoint>();//从数据库中读取的所有点
+
+                        StreamReader streamReader = new StreamReader(poyFullPath);
+                        string pointLine = streamReader.ReadLine();
+                        while (pointLine != null)
+                        {
+                            double x, y;
+                            x = Convert.ToDouble(pointLine.Split(' ')[0]);
+                            y = Convert.ToDouble(pointLine.Split(' ')[1]);
+                            kShpLayer.kShpPoint point = new kShpLayer.kShpPoint(x, y);
+                            poyPoints.Add(point);
+                            pointLine = streamReader.ReadLine();
+                        }
+
+                        IFeatureLayer featureLayer = shpLayer.CreateShpLineFromPoint(poyPoints, poyFullPath);
+                        mainMapControl.Map.AddLayer(featureLayer);
+                        //同步鹰眼
+                        SynchronizeEagleEye();
+                    }
+                    else return;
+                }
+                catch (Exception except)
+                {
+                    MessageBox.Show("打开文档失败！\n" + except.ToString());
+                }
+            }
+
+        }
+
+        private void DouglasPeukerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DouglasPeukerForm douglasPeukerForm = new DouglasPeukerForm(this.mainMapControl);
+            douglasPeukerForm.Show();
+        }
+
+        private void LoadTINDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.CheckFileExists = true;
+                openFileDialog.Title = "加载TIN文档";
+                openFileDialog.Filter = "TIN文档(*.ctin)|*.ctin;";
+                openFileDialog.RestoreDirectory = true;
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string tinFullPath = openFileDialog.FileName;
+                        string output = "";
+                        if (tinFullPath != "")
+                        {
+                            BinaryReader br = new BinaryReader(new FileStream(tinFullPath, FileMode.Open));
+                            string info = br.ReadDouble().ToString();
+                            int i = 0;
+                            while (info != null)
+                            {
+                                output += (info + "\n");
+                                i++;
+                                if (i >= 40) break;
+
+                                info = br.ReadDouble().ToString();
+                            }
+                            MessageBox.Show(output.ToString());
+                        }
+                        else return;
+                    }
+                    catch (Exception except)
+                    {
+                        MessageBox.Show("打开文档失败！\n" + except.ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }

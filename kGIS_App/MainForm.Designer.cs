@@ -76,6 +76,9 @@ namespace kGIS_App
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.AttributeFormToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RemoveLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LoadPoyDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DouglasPeukerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LoadTINDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axLicenseControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainMapControl)).BeginInit();
             this.mapViewer.SuspendLayout();
@@ -225,7 +228,9 @@ namespace kGIS_App
             this.LoadShpDocumentToolStripMenuItem,
             this.LoadGridDataToolStripMenuItem,
             this.LoadPostGISDataToolStripMenuItem,
-            this.LoadPersonalDBToolStripMenuItem});
+            this.LoadPersonalDBToolStripMenuItem,
+            this.LoadPoyDataToolStripMenuItem,
+            this.LoadTINDataToolStripMenuItem});
             this.数据ToolStripMenuItem.Name = "数据ToolStripMenuItem";
             this.数据ToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
             this.数据ToolStripMenuItem.Text = "数据";
@@ -273,35 +278,35 @@ namespace kGIS_App
             // LargeScaleToolStripMenuItem
             // 
             this.LargeScaleToolStripMenuItem.Name = "LargeScaleToolStripMenuItem";
-            this.LargeScaleToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.LargeScaleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.LargeScaleToolStripMenuItem.Text = "放大";
             this.LargeScaleToolStripMenuItem.Click += new System.EventHandler(this.LargeScaleToolStripMenuItem_Click);
             // 
             // SmallScaleToolStripMenuItem
             // 
             this.SmallScaleToolStripMenuItem.Name = "SmallScaleToolStripMenuItem";
-            this.SmallScaleToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.SmallScaleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.SmallScaleToolStripMenuItem.Text = "缩小";
             this.SmallScaleToolStripMenuItem.Click += new System.EventHandler(this.SmallScaleToolStripMenuItem_Click);
             // 
             // LargeScaleRecToolStripMenuItem
             // 
             this.LargeScaleRecToolStripMenuItem.Name = "LargeScaleRecToolStripMenuItem";
-            this.LargeScaleRecToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.LargeScaleRecToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.LargeScaleRecToolStripMenuItem.Text = "拉框放大";
             this.LargeScaleRecToolStripMenuItem.Click += new System.EventHandler(this.LargeScaleRecToolStripMenuItem_Click);
             // 
             // SmallScaleRecToolStripMenuItem
             // 
             this.SmallScaleRecToolStripMenuItem.Name = "SmallScaleRecToolStripMenuItem";
-            this.SmallScaleRecToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.SmallScaleRecToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.SmallScaleRecToolStripMenuItem.Text = "拉框缩小";
             this.SmallScaleRecToolStripMenuItem.Click += new System.EventHandler(this.SmallScaleRecToolStripMenuItem_Click);
             // 
             // PanToolStripMenuItem
             // 
             this.PanToolStripMenuItem.Name = "PanToolStripMenuItem";
-            this.PanToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.PanToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.PanToolStripMenuItem.Text = "漫游";
             this.PanToolStripMenuItem.Click += new System.EventHandler(this.PanToolStripMenuItem_Click);
             // 
@@ -339,7 +344,8 @@ namespace kGIS_App
             this.矢量数据空间分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.BufferToolStripMenuItem,
             this.叠加分析ToolStripMenuItem,
-            this.矢栅转换ToolStripMenuItem});
+            this.矢栅转换ToolStripMenuItem,
+            this.DouglasPeukerToolStripMenuItem});
             this.矢量数据空间分析ToolStripMenuItem.Name = "矢量数据空间分析ToolStripMenuItem";
             this.矢量数据空间分析ToolStripMenuItem.Size = new System.Drawing.Size(71, 20);
             this.矢量数据空间分析ToolStripMenuItem.Text = "矢量分析";
@@ -347,20 +353,20 @@ namespace kGIS_App
             // BufferToolStripMenuItem
             // 
             this.BufferToolStripMenuItem.Name = "BufferToolStripMenuItem";
-            this.BufferToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.BufferToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.BufferToolStripMenuItem.Text = "缓冲区";
             this.BufferToolStripMenuItem.Click += new System.EventHandler(this.BufferToolStripMenuItem_Click);
             // 
             // 叠加分析ToolStripMenuItem
             // 
             this.叠加分析ToolStripMenuItem.Name = "叠加分析ToolStripMenuItem";
-            this.叠加分析ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.叠加分析ToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.叠加分析ToolStripMenuItem.Text = "叠加分析";
             // 
             // 矢栅转换ToolStripMenuItem
             // 
             this.矢栅转换ToolStripMenuItem.Name = "矢栅转换ToolStripMenuItem";
-            this.矢栅转换ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.矢栅转换ToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.矢栅转换ToolStripMenuItem.Text = "矢栅转换";
             // 
             // 栅格数据空间分析ToolStripMenuItem
@@ -378,32 +384,32 @@ namespace kGIS_App
             // 栅格计算ToolStripMenuItem
             // 
             this.栅格计算ToolStripMenuItem.Name = "栅格计算ToolStripMenuItem";
-            this.栅格计算ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.栅格计算ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.栅格计算ToolStripMenuItem.Text = "栅格计算";
             // 
             // 栅格统计ToolStripMenuItem
             // 
             this.栅格统计ToolStripMenuItem.Name = "栅格统计ToolStripMenuItem";
-            this.栅格统计ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.栅格统计ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.栅格统计ToolStripMenuItem.Text = "栅格统计";
             // 
             // DensityAnalystToolStripMenuItem
             // 
             this.DensityAnalystToolStripMenuItem.Name = "DensityAnalystToolStripMenuItem";
-            this.DensityAnalystToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.DensityAnalystToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.DensityAnalystToolStripMenuItem.Text = "密度分析";
             this.DensityAnalystToolStripMenuItem.Click += new System.EventHandler(this.DensityAnalystToolStripMenuItem_Click);
             // 
             // 距离分析ToolStripMenuItem
             // 
             this.距离分析ToolStripMenuItem.Name = "距离分析ToolStripMenuItem";
-            this.距离分析ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.距离分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.距离分析ToolStripMenuItem.Text = "距离分析";
             // 
             // 重分类ToolStripMenuItem
             // 
             this.重分类ToolStripMenuItem.Name = "重分类ToolStripMenuItem";
-            this.重分类ToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.重分类ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.重分类ToolStripMenuItem.Text = "重分类";
             // 
             // statusStrip1
@@ -462,6 +468,27 @@ namespace kGIS_App
             this.RemoveLayerToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.RemoveLayerToolStripMenuItem.Text = "移除图层";
             this.RemoveLayerToolStripMenuItem.Click += new System.EventHandler(this.RemoveLayerToolStripMenuItem_Click);
+            // 
+            // LoadPoyDataToolStripMenuItem
+            // 
+            this.LoadPoyDataToolStripMenuItem.Name = "LoadPoyDataToolStripMenuItem";
+            this.LoadPoyDataToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.LoadPoyDataToolStripMenuItem.Text = "加载poy数据";
+            this.LoadPoyDataToolStripMenuItem.Click += new System.EventHandler(this.LoadPoyDataToolStripMenuItem_Click);
+            // 
+            // DouglasPeukerToolStripMenuItem
+            // 
+            this.DouglasPeukerToolStripMenuItem.Name = "DouglasPeukerToolStripMenuItem";
+            this.DouglasPeukerToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.DouglasPeukerToolStripMenuItem.Text = "道格拉斯普客算法";
+            this.DouglasPeukerToolStripMenuItem.Click += new System.EventHandler(this.DouglasPeukerToolStripMenuItem_Click);
+            // 
+            // LoadTINDataToolStripMenuItem
+            // 
+            this.LoadTINDataToolStripMenuItem.Name = "LoadTINDataToolStripMenuItem";
+            this.LoadTINDataToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.LoadTINDataToolStripMenuItem.Text = "加载tin数据";
+            this.LoadTINDataToolStripMenuItem.Click += new System.EventHandler(this.LoadTINDataToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -544,6 +571,9 @@ namespace kGIS_App
         private System.Windows.Forms.ToolStripMenuItem AttributeFormToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LoadPersonalDBToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RemoveLayerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LoadPoyDataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DouglasPeukerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LoadTINDataToolStripMenuItem;
     }
 }
 
