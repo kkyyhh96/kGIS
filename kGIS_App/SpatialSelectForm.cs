@@ -49,11 +49,6 @@ namespace kGIS_App
             }
         }
 
-        private void btnOk_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void cmbLayer_MouseClick(object sender, MouseEventArgs e)
         {
             cmbLayer.Items.Clear();

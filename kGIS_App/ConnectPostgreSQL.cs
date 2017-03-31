@@ -123,7 +123,7 @@ namespace kGIS_App
                 List<kShpLayer.kShpPoint> shpPoints = new List<kShpLayer.kShpPoint>();//从数据库中读取的所有点
 
                 //从数据库中读取数据
-                string sqlCommand = "select * from " + tbxTableName.Text + " limit 100;";
+                string sqlCommand = "select * from " + tbxTableName.Text;
                 NpgsqlCommand command = new NpgsqlCommand(sqlCommand, connection);
                 NpgsqlDataReader reader = command.ExecuteReader();
 
@@ -147,7 +147,7 @@ namespace kGIS_App
                 reader.Close();
 
                 //读取数据完毕后添加到新图层中
-                IFeatureLayer featureLayer = shpLayer.CreateShpFromPoint(shpPoints, tbxShpPath.Text);
+                IFeatureLayer featureLayer = shpLayer.CreateShpPointFromPoint(shpPoints, tbxShpPath.Text);
                 mainMapControl.Map.AddLayer(featureLayer);
 
                 //同步鹰眼

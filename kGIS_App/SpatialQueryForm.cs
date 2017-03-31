@@ -128,7 +128,7 @@ namespace kGIS_App
             try
             {
                 //获取所有的字段名
-                ILayer layer = mainMapControl.Map.get_Layer(0);
+                ILayer layer = mainMapControl.Map.get_Layer(cmbLayerName.SelectedIndex);
                 featureLayer = layer as IFeatureLayer;
                 for (int i = 0; i < featureLayer.FeatureClass.Fields.FieldCount; i++)
                 {
@@ -168,7 +168,7 @@ namespace kGIS_App
 
         private void lbxFieldName_DoubleClick(object sender, EventArgs e)
         {
-            tbxQueryText.Text += "\"" + lbxFieldName.SelectedItem.ToString() + "\" ";
+            tbxQueryText.Text += lbxFieldName.SelectedItem.ToString();
         }
 
         private void lbxGetValue_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -176,6 +176,7 @@ namespace kGIS_App
             tbxQueryText.Text += lbxGetValue.SelectedItem.ToString();
         }
 
+        //空间查询
         private void btnOk_Click(object sender, EventArgs e)
         {
             try
@@ -196,6 +197,5 @@ namespace kGIS_App
                 MessageBox.Show(ex.ToString());
             }
         }
-
     }
 }
