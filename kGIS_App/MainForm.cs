@@ -417,21 +417,10 @@ namespace kGIS_App
                     try
                     {
                         string tinFullPath = openFileDialog.FileName;
-                        string output = "";
                         if (tinFullPath != "")
                         {
-                            BinaryReader br = new BinaryReader(new System.IO.FileStream(tinFullPath, FileMode.Open));
-                            string info = br.ReadDouble().ToString();
-                            int i = 0;
-                            while (info != null)
-                            {
-                                output += (info + "\n");
-                                i++;
-                                if (i >= 40) break;
-
-                                info = br.ReadDouble().ToString();
-                            }
-                            MessageBox.Show(output.ToString());
+                            CTinClass tinClass = new CTinClass();
+                            tinClass.ReadData(tinFullPath);
                         }
                         else return;
                     }
@@ -622,6 +611,7 @@ namespace kGIS_App
         #endregion
 
         #region 拉框
+        ShortPathForm shortPathForm = null;
         private void mainMapControl_OnMouseDown(object sender, IMapControlEvents2_OnMouseDownEvent e)
         {
             switch (clickMode)
@@ -631,11 +621,14 @@ namespace kGIS_App
                 case 2://如果是空间选择
                     SelectFeature(e); break;
                 case 3://如果是编辑
-                    EditFeature(e);
+                    EditFeature(e); break;
+                case 4:
+                    shortPathForm.AddNetWorkPoint(e);
                     break;
             }
             mainMapControl.ActiveView.Refresh();
         }
+
 
         private void LargeOrSmall()
         {
@@ -883,7 +876,10 @@ namespace kGIS_App
 
         private void ShortPathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            ShortPathForm shortPathForm = new ShortPathForm(mainMapControl);
+            shortPathForm.Show();
+            this.shortPathForm = shortPathForm;
+            clickMode = 4;
         }
 
         private void EditFeatureToolStripMenuItem_Click(object sender, EventArgs e)

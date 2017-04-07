@@ -8,6 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ESRI.ArcGIS.Controls;
+using ESRI.ArcGIS.Display;
+using ESRI.ArcGIS.DataSourcesFile;
+using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Editor;
+using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.DataSourcesRaster;
+using ESRI.ArcGIS.DataSourcesGDB;
+using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.NetworkAnalysis;
+using ESRI.ArcGIS.SpatialAnalyst;
 
 namespace kGIS_App
 {
@@ -35,5 +45,6 @@ namespace kGIS_App
         {
             editMethod = this.cmbEdit.SelectedIndex;
         }
+        
     }
 }
