@@ -16,6 +16,9 @@ namespace kGIS_App
         _dct_edge2 dct_edge2 = new _dct_edge2();
 
         List<z_doublepoint3d> point3dList = new List<z_doublepoint3d>();
+        List<_dct_edge2> edgeList = new List<_dct_edge2>();
+        List<_dct_tri> triList = new List<_dct_tri>();
+
         /// <summary>
         /// 读取ctin文件的数据
         /// </summary>
@@ -29,25 +32,55 @@ namespace kGIS_App
             //跳过读取系统时间
             binaryReader.ReadBytes(16);
             //读取备注
-            byte[] strMemoByte = binaryReader.ReadBytes(39);
+            byte[] strMemoByte = binaryReader.ReadBytes(1000);
             var encoding = Encoding.Default;
             this.verinfo.strMemo = encoding.GetChars(strMemoByte);
 
+            //读取点数据
+            //x,y,z最大最小值
+            double xMin = binaryReader.ReadDouble();
+            double xMax = binaryReader.ReadDouble();
+            double yMin = binaryReader.ReadDouble();
+            double yMax = binaryReader.ReadDouble();
+            double zMin = binaryReader.ReadDouble();
+            double zMax = binaryReader.ReadDouble();
+            //点数据集的大小
+            int datasetPointSize = binaryReader.ReadInt32();
             //读取点集数据
-            int[] tInt = new int[50];
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < datasetPointSize; i++)
             {
-                tInt[i] = binaryReader.ReadInt32();
+                doublepoint3d.x = binaryReader.ReadInt64();
+                doublepoint3d.y = binaryReader.ReadInt64();
+                doublepoint3d.z = binaryReader.ReadInt64();
+                point3dList.Add(doublepoint3d);
+                doublepoint3d = new z_doublepoint3d();
             }
 
+            //读取边数据
+            //边数据集的大小
+            int datasetEdgeSize = binaryReader.ReadInt32();
+            //读取边集数据
+            for (int i = 0; i < datasetEdgeSize; i++)
+            {
+                dct_edge2.ptNum1 = binaryReader.ReadInt64();
+                dct_edge2.ptNum2 = binaryReader.ReadInt64();
+                edgeList.Add(dct_edge2);
+                dct_edge2 = new _dct_edge2();
+            }
 
-            byte[] tBytes = binaryReader.ReadBytes(500);
-            Console.WriteLine(encoding.GetChars(tBytes));
-
-
-
-
-
+            //读取三角数据
+            //三角数据集的大小
+            int datasetTriSize = binaryReader.ReadInt32();
+            //读取三角集数据
+            for (int i = 0; i < datasetTriSize; i++)
+            {
+                dct_tri.p1 = binaryReader.ReadInt64();
+                dct_tri.p2 = binaryReader.ReadInt64();
+                dct_tri.p3 = binaryReader.ReadInt64();
+                dct_tri.b = binaryReader.ReadByte();
+                triList.Add(dct_tri);
+                dct_tri = new _dct_tri();
+            }
             binaryReader.Close();
         }
     }

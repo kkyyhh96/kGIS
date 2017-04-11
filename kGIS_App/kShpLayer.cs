@@ -43,6 +43,7 @@ namespace kGIS_App
         {
             public double x;
             public double y;
+            public double z = 0;
             public List<string> fieldValue = new List<string>();
 
             public kShpPoint() { }
@@ -170,6 +171,7 @@ namespace kGIS_App
                 {
                     point.X = kShpPointList[i].x;
                     point.Y = kShpPointList[i].y;
+                    point.Z = kShpPointList[i].z;
                     IFeatureBuffer featureBuffer = featureClass.CreateFeatureBuffer();
                     featureBuffer.Shape = point;
                     //添加字段值
