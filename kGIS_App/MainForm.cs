@@ -421,6 +421,14 @@ namespace kGIS_App
                         {
                             CTinClass tinClass = new CTinClass();
                             tinClass.ReadData(tinFullPath);
+                            //IFeatureLayer pointFeatureLayer = tinClass.CreateShpPts(tinFullPath + "pt");
+                            //mainMapControl.Map.AddLayer(pointFeatureLayer);
+                            //IFeatureLayer edgeFeatureLayer = tinClass.CreateShpEdge(tinFullPath + "edge");
+                            //mainMapControl.Map.AddLayer(edgeFeatureLayer);
+                            IFeatureLayer triFeatureLayer = tinClass.CreateShpTri(tinFullPath + "tri"); ;
+                            mainMapControl.Map.AddLayer(triFeatureLayer);
+                            //Í¬²½Ó¥ÑÛ
+                            SynchronizeEagleEye();
                         }
                         else return;
                     }

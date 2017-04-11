@@ -47,10 +47,11 @@ namespace kGIS_App
             public List<string> fieldValue = new List<string>();
 
             public kShpPoint() { }
-            public kShpPoint(double x, double y)
+            public kShpPoint(double x, double y, double z = 0)
             {
                 this.x = x;
                 this.y = y;
+                this.z = z;
             }
             public kShpPoint(IPoint point)
             {
@@ -62,6 +63,30 @@ namespace kGIS_App
                 this.x = Convert.ToDouble(coordinates.Split(',')[0].Split('(')[1]);
                 this.y = Convert.ToDouble(coordinates.Split(',')[1].Split(')')[0]);
             }
+        }
+        public class kShpLine
+        {
+            public IPointCollection pointCollection = new PolylineClass();
+            public kShpLine(IPoint pt1, IPoint pt2, bool circle = false)
+            {
+                pointCollection.AddPoint(pt1);
+                pointCollection.AddPoint(pt2);
+                if (circle)
+                {
+                    pointCollection.AddPoint(pt1);
+                }
+            }
+            public kShpLine(IPoint pt1, IPoint pt2, IPoint pt3, bool circle = false)
+            {
+                pointCollection.AddPoint(pt1);
+                pointCollection.AddPoint(pt2);
+                pointCollection.AddPoint(pt3);
+                if (circle)
+                {
+                    pointCollection.AddPoint(pt1);
+                }
+            }
+
         }
 
         /// <summary>
@@ -238,6 +263,60 @@ namespace kGIS_App
                 IFeatureBuffer featureBuffer = featureClass.CreateFeatureBuffer();
                 featureBuffer.Shape = polyline;
                 featureCursor.InsertFeature(featureBuffer);
+                featureCursor.Flush();
+
+                return CreateFeatureLayer(shpName, featureClass);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+        }
+        #endregion
+
+        #region 从线数据中创建一个shp线图层
+        /// <summary>
+        /// 从点数据中创建一个shp线图层
+        /// </summary>
+        /// <param name="kShpPointList">点数据列表</param>
+        /// <param name="filePath">shp文件保存路径</param>
+        /// <returns></returns>
+        public IFeatureLayer CreateShpLineFromLine(List<kShpLine> kShpLineList, string filePath)
+        {
+            try
+            {
+                string shpName;
+                IFeatureWorkspace kFeatureWorkSpace;
+                IFields fields;
+                IFieldsEdit fieldsEdit;
+                IField kField;
+                IGeometryDefEdit kGeometryDefEdit;
+                CreateShpDefaultSetting(filePath, out shpName, out kFeatureWorkSpace, out fields, out fieldsEdit, out kField, out kGeometryDefEdit);
+
+                kGeometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPolyline;//设置为线数据
+                //添加几何属性字段
+                fieldsEdit.AddField(kField);
+
+                CreateShpFields(fieldsEdit);
+
+                //建立要素集
+                IFeatureClass featureClass = kFeatureWorkSpace.CreateFeatureClass(shpName, fields, null, null, esriFeatureType.esriFTSimple, "Shape", "");
+                //创建线
+                IPoint point = new PointClass();
+                IPointCollection pointCollection = new PolylineClass();
+                IPolyline polyline;
+
+                //使用流的方法批量添加线
+                IFeatureCursor featureCursor = featureClass.Insert(true);
+
+                for (int i = 0; i < kShpLineList.Count; i++)
+                {
+                    polyline = (IPolyline)kShpLineList[i].pointCollection;
+                    IFeatureBuffer featureBuffer = featureClass.CreateFeatureBuffer();
+                    featureBuffer.Shape = polyline;
+                    featureCursor.InsertFeature(featureBuffer);
+                }
                 featureCursor.Flush();
 
                 return CreateFeatureLayer(shpName, featureClass);
