@@ -86,6 +86,13 @@ namespace kGIS_App
                     pointCollection.AddPoint(pt1);
                 }
             }
+            public kShpLine(List<IPoint> pts)
+            {
+                foreach (IPoint pt in pts)
+                {
+                    pointCollection.AddPoint(pt);
+                }
+            }
 
         }
 

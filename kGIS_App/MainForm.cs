@@ -425,8 +425,10 @@ namespace kGIS_App
                             //mainMapControl.Map.AddLayer(pointFeatureLayer);
                             //IFeatureLayer edgeFeatureLayer = tinClass.CreateShpEdge(tinFullPath + "edge");
                             //mainMapControl.Map.AddLayer(edgeFeatureLayer);
-                            IFeatureLayer triFeatureLayer = tinClass.CreateShpTri(tinFullPath + "tri"); ;
-                            mainMapControl.Map.AddLayer(triFeatureLayer);
+                            //IFeatureLayer triFeatureLayer = tinClass.CreateShpTri(tinFullPath + "tri"); ;
+                            //mainMapControl.Map.AddLayer(triFeatureLayer);
+                            IFeatureLayer thiessanFeatureLayer = tinClass.CreateShpThiessan(tinFullPath + "thiessan"); ;
+                            mainMapControl.Map.AddLayer(thiessanFeatureLayer);
                             //Í¬²½Ó¥ÑÛ
                             SynchronizeEagleEye();
                         }
